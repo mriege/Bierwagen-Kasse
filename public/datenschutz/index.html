@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>Datenschutzerklärung — Bierwagen Kasse · Webexperte.Berlin</title>
+    <meta
+      name="description"
+      content="Datenschutzerklärung der Bierwagen-Kasse-App. Keine Cookies, kein Tracking, kein Backend. Konfiguration und Tagesbilanz nur lokal im Browser. Optionale Geräte-Synchronisation per WebRTC direkt zwischen Geräten — kein externer Server. Verantwortlich: Marco Riege, Webexperte.Berlin."
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="/datenschutz/" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      :root {
+        color-scheme: dark;
+        --bg: #18181b;
+        --bg-elev: #27272a;
+        --text: #fafafa;
+        --text-muted: #a1a1aa;
+        --text-faint: #71717a;
+        --accent: #fbbf24;
+        --emerald: #10b981;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+          Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      code {
+        background: #27272a;
+        padding: 0.1rem 0.4rem;
+        border-radius: 0.3rem;
+        font-size: 0.9em;
+      }
+      .container {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+      header.site {
+        border-bottom: 1px solid #27272a;
+        background: #09090b;
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.85rem 1.25rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 800;
+        color: var(--text);
+      }
+      .brand img {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+      }
+      .nav-links {
+        margin-left: auto;
+        display: flex;
+        gap: 1.25rem;
+      }
+      .nav-links a {
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+      .nav-links a:hover {
+        color: var(--text);
+      }
+      main {
+        padding: 2.5rem 0 4rem;
+      }
+      h1 {
+        font-size: clamp(1.7rem, 4vw, 2.4rem);
+        font-weight: 800;
+        margin: 0 0 0.4rem;
+        letter-spacing: -0.01em;
+      }
+      .subtitle {
+        color: var(--text-muted);
+        font-size: 1rem;
+        margin: 0 0 2rem;
+      }
+      h2 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 2rem 0 0.5rem;
+        color: var(--text);
+      }
+      p,
+      address {
+        margin: 0 0 1rem;
+        color: var(--text-muted);
+        font-style: normal;
+      }
+      address strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+      ul {
+        margin: 0 0 1rem;
+        padding-left: 1.4rem;
+        color: var(--text-muted);
+      }
+      ul li {
+        margin-bottom: 0.4rem;
+      }
+      .source-box {
+        margin-top: 3rem;
+        padding: 1rem 1.2rem;
+        background: var(--bg-elev);
+        border: 1px solid #3f3f46;
+        border-radius: 0.7rem;
+        font-size: 0.85rem;
+        color: var(--text-faint);
+      }
+      footer.site {
+        border-top: 1px solid #27272a;
+        padding: 2rem 0;
+        font-size: 0.85rem;
+        color: var(--text-faint);
+        text-align: center;
+      }
+      footer a {
+        color: var(--text-muted);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="nav">
+        <a class="brand" href="/" aria-label="Bierwagen Kasse Startseite">
+          <img src="/icon.svg" alt="" width="28" height="28" />
+          Bierwagen Kasse
+        </a>
+        <div class="nav-links">
+          <a href="/">Start</a>
+          <a href="/dokumentation/">Anleitung</a>
+          <a href="/impressum/">Impressum</a>
+          <a href="/app/">App öffnen</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <h1>Datenschutzerklärung</h1>
+        <p class="subtitle">Bierwagen-Kasse-App</p>
+
+        <h2>1. Verantwortliche Stelle</h2>
+        <address>
+          <strong>Marco Riege</strong><br />
+          Webexperte.Berlin<br />
+          Onckenstr. 2<br />
+          12435 Berlin<br />
+          Deutschland<br />
+          Tel: +49 (0) 30 239 961 59<br />
+          E-Mail:
+          <a href="mailto:marco@webexperte.berlin">marco@webexperte.berlin</a>
+        </address>
+
+        <h2>2. Geltungsbereich</h2>
+        <p>
+          Diese Datenschutzerklärung beschreibt die Verarbeitung
+          personenbezogener Daten beim Aufruf und der Nutzung der Webanwendung
+          „Bierwagen Kasse" (im Folgenden „die App") sowie der zugehörigen
+          Landing-Page.
+        </p>
+
+        <h2>3. Keine personenbezogene Datenverarbeitung in der App</h2>
+        <p>
+          Die App ist eine rein clientseitige Single-Page-Anwendung und
+          verarbeitet keine personenbezogenen Daten im Sinne der DSGVO:
+        </p>
+        <ul>
+          <li>Es gibt kein Backend und keine zentrale Datenbank.</li>
+          <li>Es werden keine Cookies oder <code>sessionStorage</code> verwendet.</li>
+          <li>
+            Es findet keine Telemetrie, Analyse oder Drittanbieter-Datenüber­mittlung
+            statt.
+          </li>
+          <li>
+            Bestellungen, Pfand-Rückgaben und Bargeld-Eingaben leben während
+            der Eingabe ausschließlich im Arbeitsspeicher des Browsers.
+          </li>
+        </ul>
+
+        <h2>
+          4. Lokale Speicherung im <code>localStorage</code> und IndexedDB
+        </h2>
+        <p>
+          Damit die App über einen Reload hinaus nutzbar bleibt, werden auf dem
+          Gerät folgende Daten gespeichert:
+        </p>
+        <ul>
+          <li>
+            <strong>Konfiguration</strong>
+            (<code>localStorage</code>-Schlüssel
+            <code>bierwagen-kasse:config:v1</code>): Getränke- und Pfand-Liste,
+            inklusive Bestand und Happy-Hour.
+          </li>
+          <li>
+            <strong>Einstellungen</strong>
+            (<code>bierwagen-kasse:settings:v1</code>): Sprache,
+            Hell-/Dunkel-Modus, aktivierte Funktionen, Anfangsbestand der
+            Kasse, Geräte-ID und Gerätename.
+          </li>
+          <li>
+            <strong>Tagesbilanz</strong>
+            (<code>bierwagen-kasse:bilanz:v1</code>): abgeschlossene
+            Bestellungen mit Positionen, Trinkgeld, Zahlart und
+            Erfassungsgerät — nur, wenn die Tagesbilanz-Funktion aktiviert
+            ist.
+          </li>
+          <li>
+            <strong>Sync-Doc</strong> (IndexedDB-Datenbank
+            <code>bierwagen-kasse-doc-v1</code>): identische Inhalte als
+            CRDT-Dokument für die optionale Geräte-Synchronisation. Wird nur
+            befüllt, wenn die Sync-Funktion in <em>Konfiguration → Geräte</em>
+            aktiviert wurde.
+          </li>
+        </ul>
+        <p>
+          Die Daten verbleiben lokal auf dem Gerät, werden nicht an Server
+          übertragen und nicht mit personenbezogenen Daten verknüpft. Über den
+          Button „Alles zurücksetzen" in der App oder die Browser-Einstellungen
+          können sie jederzeit gelöscht werden. Rechtsgrundlage: Art. 6 Abs. 1
+          lit. f DSGVO (berechtigtes Interesse an einer komfortablen Bedienung
+          ohne Wiedereingabe).
+        </p>
+
+        <h2>4a. Geräte-Synchronisation (optional)</h2>
+        <p>
+          Die App bietet eine optionale Funktion „Geräte synchronisieren"
+          (<em>Konfiguration → Geräte</em>). Sie ist standardmäßig deaktiviert
+          und wird nur durch eine bewusste Nutzeraktion aktiviert (Scan eines
+          QR-Codes zwischen den Geräten).
+        </p>
+        <ul>
+          <li>
+            Die Pairing-Daten (Session-ID + WebRTC-SDP) werden ausschließlich
+            einmalig per QR-Code zwischen den Geräten ausgetauscht — nicht
+            über einen Server.
+          </li>
+          <li>
+            Nach erfolgreichem Pairing fließen Bilanz-, Bestand- und
+            Sortiments-Updates direkt zwischen den Geräten via
+            <code>WebRTC DataChannel</code>. Die Daten verlassen das lokale
+            Netzwerk nicht.
+          </li>
+          <li>
+            Es wird kein Signaling-Server, kein Backend und kein
+            Drittanbieter-Service genutzt.
+          </li>
+          <li>
+            Für den Verbindungsaufbau wird weder ein STUN- noch ein TURN-Server
+            kontaktiert. Die Geräte müssen sich deshalb im selben lokalen
+            Netzwerk befinden.
+          </li>
+          <li>
+            Jeder Gerätename, den der Nutzer für sein Gerät vergibt, wird beim
+            Handshake an die anderen Pairing-Partner übertragen, damit
+            Bilanz-Einträge dem korrekten Gerät zugeordnet werden können.
+          </li>
+        </ul>
+        <p>
+          Sync kann jederzeit per „Verbindung beenden" beendet werden; die lokal
+          gespeicherten Daten bleiben erhalten. Bei „Alles zurücksetzen" wird
+          die Sync-Verbindung getrennt und die IndexedDB-Doc gelöscht.
+        </p>
+
+        <h2>5. Server-Logs durch den Hoster</h2>
+        <p>
+          Beim Abruf der App werden vom Webserver des Hosters technisch
+          notwendige Zugriffsdaten verarbeitet, die für die sichere und stabile
+          Auslieferung erforderlich sind: Browsertyp und -version,
+          Betriebssystem, Referrer-URL, Datum und Uhrzeit des Zugriffs,
+          IP-Adresse sowie Internet-Service-Provider. Rechtsgrundlage ist Art.
+          6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an Sicherheit und
+          Funktionsfähigkeit). Eine Zusammenführung dieser Daten mit anderen
+          Quellen erfolgt nicht.
+        </p>
+
+        <h2>6. Service Worker und Offline-Modus</h2>
+        <p>
+          Beim ersten Aufruf der App wird ein Service Worker registriert, der
+          den App-Code im Browser-Cache ablegt, um eine Offline-Nutzung zu
+          ermöglichen. Es findet dabei keine Übertragung personenbezogener
+          Daten an den Anbieter statt.
+        </p>
+
+        <h2>7. Ihre Rechte</h2>
+        <p>Sie haben das Recht auf:</p>
+        <ul>
+          <li>Auskunft (Art. 15 DSGVO)</li>
+          <li>Berichtigung (Art. 16 DSGVO)</li>
+          <li>Löschung (Art. 17 DSGVO)</li>
+          <li>Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+          <li>Datenübertragbarkeit (Art. 20 DSGVO)</li>
+          <li>Widerspruch gegen die Verarbeitung (Art. 21 DSGVO)</li>
+          <li>Beschwerde bei einer Aufsichtsbehörde</li>
+        </ul>
+
+        <h2>8. Verbraucherstreitbeilegung</h2>
+        <p>
+          Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren
+          vor einer Verbraucherschlichtungsstelle teilzunehmen.
+        </p>
+
+        <h2>9. Änderungen</h2>
+        <p>
+          Diese Datenschutzerklärung kann angepasst werden, falls sich
+          technische oder rechtliche Rahmenbedingungen ändern. Es gilt jeweils
+          die zum Zeitpunkt der Nutzung abrufbare Fassung.
+        </p>
+
+        <div class="source-box">
+          Quelle / Inhaltliche Basis:
+          <a
+            href="https://webexperte.berlin/datenschutz.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            >webexperte.berlin/datenschutz.html</a
+          ><br />
+          © 2026 Marco Riege · Webexperte.Berlin
+        </div>
+      </div>
+    </main>
+
+    <footer class="site">
+      <div class="container">
+        © 2026 Marco Riege ·
+        <a href="https://webexperte.berlin" target="_blank" rel="noopener noreferrer"
+          >Webexperte.Berlin</a
+        >
+        · <a href="/">Start</a> · <a href="/impressum">Impressum</a>
+      </div>
+    </footer>
+  </body>
+</html>

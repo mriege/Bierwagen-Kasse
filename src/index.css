@@ -1,0 +1,242 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Farben: Schiefertafel und Bier statt Grau und Neon.
+ *   canvas…pressed  Flächen, von hinten nach vorn
+ *   ink…            Text. Alle Stufen erfüllen 4,5:1 auf jeder Fläche.
+ *   accent          Bernstein. Nur: Hauptaktion, Auswahl, Menge.
+ *   accent-line     Rahmen und Fokus: erfüllt 3:1 auch auf hellen Flächen.
+ *   positive        Verbunden, passend, Wechselgeld.
+ *   negative        Rückgabe, Auszahlung, Löschen, Storno.
+ *   promo           Happy Hour und Trinkgeld.
+ * `-ink` ist die Textvariante einer Farbe, `-soft` die getönte Fläche.
+ */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --canvas: 18 16 14;
+  --surface: 32 29 26;
+  --raised: 46 42 37;
+  --pressed: 60 54 48;
+  --line: 62 56 49;
+  --ink: 248 244 237;
+  --ink-soft: 214 207 196;
+  --ink-mute: 176 168 156;
+  --accent: 245 166 35;
+  --accent-press: 255 186 73;
+  --accent-line: 245 166 35;
+  --accent-ink: 247 184 75;
+  --accent-soft: 66 46 14;
+  --on-accent: 28 18 4;
+  --positive: 17 122 78;
+  --positive-ink: 92 222 158;
+  --positive-soft: 17 52 37;
+  --negative: 200 40 40;
+  --negative-ink: 252 142 134;
+  --negative-soft: 70 26 24;
+  --promo: 151 42 170;
+  --promo-ink: 236 158 248;
+  --promo-soft: 62 28 70;
+  --on-solid: 255 255 255;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --canvas: 245 241 234;
+  --surface: 255 255 255;
+  --raised: 236 230 220;
+  --pressed: 222 214 200;
+  --line: 214 206 192;
+  --ink: 27 23 20;
+  --ink-soft: 70 63 55;
+  --ink-mute: 96 88 78;
+  --accent: 245 166 35;
+  --accent-press: 228 148 20;
+  --accent-line: 176 106 0;
+  --accent-ink: 133 77 0;
+  --accent-soft: 253 238 208;
+  --on-accent: 28 18 4;
+  --positive: 13 115 73;
+  --positive-ink: 9 99 62;
+  --positive-soft: 218 244 231;
+  --negative: 193 38 38;
+  --negative-ink: 170 28 28;
+  --negative-soft: 253 228 225;
+  --promo: 146 36 164;
+  --promo-ink: 131 26 149;
+  --promo-soft: 247 228 251;
+  --on-solid: 255 255 255;
+}
+
+/* Erhöhter Kontrast: Text und Linien rücken weiter von der Fläche ab. */
+@media (prefers-contrast: more) {
+  :root,
+  :root[data-theme='dark'] {
+    --ink-soft: 240 235 226;
+    --ink-mute: 214 207 196;
+    --line: 120 110 98;
+  }
+  :root[data-theme='light'] {
+    --ink-soft: 40 34 29;
+    --ink-mute: 64 57 49;
+    --line: 120 110 98;
+  }
+}
+
+@layer utilities {
+  /* iOS PWA Safe-Area-Insets — siehe meta viewport-fit=cover */
+  .pt-safe-2 {
+    padding-top: max(0.5rem, env(safe-area-inset-top));
+  }
+  .pb-safe-2 {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+  /* Mindestgröße für Touch-Ziele (HIG: 44 pt). In px: Bei großer Schrift wächst
+     der Text, die Finger nicht. */
+  .tap {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@supports (height: 100dvh) {
+  #root {
+    height: 100dvh;
+  }
+}
+
+html {
+  /* Doppeltipp-Zoom aus (Kassieren geht schnell), Pinch-Zoom bleibt möglich. */
+  touch-action: manipulation;
+}
+
+body {
+  background: rgb(var(--canvas));
+  color: rgb(var(--ink));
+  font-family: -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+input,
+select,
+textarea,
+.selectable {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Tastatur-Fokus überall sichtbar, ohne Touch-Bedienung zu stören. */
+:focus-visible {
+  outline: 2px solid rgb(var(--accent-line));
+  outline-offset: 2px;
+}
+
+/* Eingabefelder sind überall groß genug für den Finger. */
+input:not([type='checkbox']),
+select {
+  min-height: 44px;
+}
+
+/* Hide number-input spinners */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* Sheet: am Handy von unten (gut erreichbar), sonst mittig. */
+dialog.sheet {
+  margin: auto 0 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 92dvh;
+  border: 0;
+  border-radius: 1.25rem 1.25rem 0 0;
+  background: rgb(var(--surface));
+  color: rgb(var(--ink));
+  overflow: hidden;
+}
+dialog.sheet[open] {
+  display: flex;
+  flex-direction: column;
+  animation: sheet-up 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+dialog.sheet::backdrop {
+  background: rgb(0 0 0 / 0.55);
+  animation: backdrop-in 200ms ease-out;
+}
+@media (min-width: 1024px), (min-width: 600px) and (max-height: 520px) {
+  dialog.sheet {
+    margin: auto;
+    width: calc(100% - 2rem);
+    max-width: var(--sheet-width, 32rem);
+    max-height: min(90dvh, 44rem);
+    border-radius: 1.25rem;
+  }
+}
+@keyframes sheet-up {
+  from {
+    transform: translateY(2rem);
+    opacity: 0;
+  }
+}
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Reduzierte Bewegung: Animationen enden sofort, Bedeutung bleibt im Layout. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .backdrop-blur-sm {
+    backdrop-filter: none;
+  }
+  dialog.sheet::backdrop {
+    background: rgb(0 0 0 / 0.8);
+  }
+}

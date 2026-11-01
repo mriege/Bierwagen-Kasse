@@ -1,0 +1,2497 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+
+    <title>Bierwagen Kasse — kostenlose Touch-Kasse für Vereinsfest, Bierwagen, Grillstand & Imbiss</title>
+    <meta
+      name="description"
+      content="Schlanke Web-App als Kasse für Bierwagen, Schützenfest, Vereinsfest, Festzelt, Grillstand, Foodtruck oder Imbiss. Touch-optimiert, mit Pfand-Handling, Wechselgeld-Rechner, Trinkgeld, Tagesbilanz mit CSV-Export, Bestand, Happy-Hour. Mehrgeräte-Synchronisation per QR-Code direkt zwischen Tablets/Handys — ohne Server. Kein Account, DSGVO-konform, sofort im Browser."
+    />
+    <meta name="author" content="Marco Riege · Webexperte.Berlin" />
+    <meta
+      name="keywords"
+      content="Bierwagen Kasse, Festkasse, Vereinsfest Kasse App, Schützenfest Kasse, Festzelt Kasse, Grillstand Kasse, Imbiss Kasse, Foodtruck Kasse, Pfand App, Touch Kasse, Browser Kasse, Kasse ohne Account, DSGVO konform, Vereinsfest, Tagesbilanz CSV, Trinkgeld, Bestand"
+    />
+    <link rel="canonical" href="/" vite-ignore />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Bierwagen Kasse — Touch-Kasse für Vereinsfest & Festzelt" />
+    <meta
+      property="og:description"
+      content="Kostenlose Web-Kasse für Bierwagen, Schützenfeste und Vereinsfeste. Pfand, Wechselgeld, Happy Hour, Storno — sofort im Browser nutzbar."
+    />
+    <meta property="og:image" content="/icon.svg" />
+    <meta property="og:locale" content="de_DE" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Bierwagen Kasse — Touch-Kasse für Vereinsfest & Festzelt" />
+    <meta
+      name="twitter:description"
+      content="Kostenlose Web-Kasse für Bierwagen, Schützenfeste und Vereinsfeste. Pfand, Wechselgeld, Happy Hour, Storno — sofort im Browser nutzbar."
+    />
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Bierwagen Kasse",
+        "alternateName": "Bierkasse",
+        "description": "Touch-optimierte Web-Kasse für Vereinsfest, Bierwagen, Schützenfest und Festzelt. Mit Pfand-Handling, Wechselgeld-Rechner, Happy-Hour, Storno-Modus, Offline-Modus. Kein Account, DSGVO-konform per Architektur.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web (PWA)",
+        "browserRequirements": "Requires JavaScript and a modern browser (Chrome, Safari, Firefox, Edge).",
+        "inLanguage": "de-DE",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "EUR"
+        },
+        "featureList": [
+          "Touch-optimierte Bestellaufnahme",
+          "Long-Press für 5er- und 10er-Mehrfachauswahl",
+          "Storno-Modus mit klarer Visualisierung",
+          "Pfand-Handling mit getrennter Rückgabe",
+          "Wechselgeld-Rechner mit Vorschlägen und Numpad",
+          "Trinkgeld-Modul mit Aufrund-Vorschlägen (optional)",
+          "Happy-Hour-Zeitfenster pro Getränk",
+          "Bestand pro Getränk mit Lock bei 0 (optional)",
+          "Tagesbilanz mit Pro-Produkt-Aggregat und Soll-Kassenstand (optional)",
+          "Tagesbilanz: CSV-Export, JSON-Export/Import, Druck-View",
+          "Mehrgeräte-Synchronisation per QR-Code (P2P, ohne Server)",
+          "Pro Bilanz-Eintrag wird das Erfassungs-Gerät angezeigt",
+          "Hauptkasse kann einzelne Nebenkassen trennen; Nebenkassen sind read-only fürs Sortiment",
+          "Kundendisplay als Vollbild-Modus mit Live-Bestellung (optional)",
+          "Mehrsprachig: Deutsch, Englisch, Französisch, Italienisch",
+          "Hell- und Dunkelmodus",
+          "Akustisches Feedback (ein-/ausschaltbar)",
+          "JSON-Export und -Import der Sortiments-Konfiguration",
+          "Offline-Modus durch Service Worker",
+          "Installierbar als PWA (Home-Screen-Icon, Vollbild)",
+          "Konfiguration und Bilanz lokal in localStorage + IndexedDB",
+          "26+ Lucide-Icons für Getränke und Snacks"
+        ],
+        "license": "https://opensource.org/licenses/MIT",
+        "codeRepository": "https://github.com/Webexperte-Berlin/bierwagen-kasse",
+        "author": {
+          "@type": "Person",
+          "name": "Marco Riege",
+          "url": "https://webexperte.berlin"
+        }
+      }
+    </script>
+
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      :root {
+        color-scheme: dark;
+        --bg: #18181b;
+        --bg-elev: #27272a;
+        --bg-deep: #09090b;
+        --text: #fafafa;
+        --text-muted: #a1a1aa;
+        --text-faint: #71717a;
+        --accent: #fbbf24;
+        --accent-hot: #f59e0b;
+        --accent-dark: #18181b;
+        --emerald: #10b981;
+        --emerald-soft: rgba(16, 185, 129, 0.15);
+        --max: 1100px;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+          Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .container {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+      header.site {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(9, 9, 11, 0.85);
+        backdrop-filter: saturate(140%) blur(8px);
+        -webkit-backdrop-filter: saturate(140%) blur(8px);
+        border-bottom: 1px solid #27272a;
+      }
+      .nav {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.85rem 0;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 800;
+        font-size: 1.05rem;
+        color: var(--text);
+      }
+      .brand img {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+      }
+      .nav-links {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+      }
+      .nav-links a {
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+      .nav-links a:hover {
+        color: var(--text);
+        text-decoration: none;
+      }
+      .nav-toggle {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .nav-toggle-label {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        margin-left: auto;
+        border-radius: 0.5rem;
+        background: var(--bg-elev);
+        cursor: pointer;
+        color: var(--text);
+      }
+      .nav-toggle-label:hover {
+        background: #3f3f46;
+      }
+      .nav-toggle-label .icon-close {
+        display: none;
+      }
+      .nav-toggle:checked ~ .nav-toggle-label .icon-open {
+        display: none;
+      }
+      .nav-toggle:checked ~ .nav-toggle-label .icon-close {
+        display: block;
+      }
+      @media (max-width: 720px) {
+        .nav-toggle-label {
+          display: inline-flex;
+        }
+        .nav-links {
+          position: absolute;
+          top: calc(100% + 1px);
+          left: 0;
+          right: 0;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0;
+          margin-left: 0;
+          background: rgba(9, 9, 11, 0.97);
+          backdrop-filter: saturate(140%) blur(12px);
+          -webkit-backdrop-filter: saturate(140%) blur(12px);
+          border-bottom: 1px solid #27272a;
+          padding: 0.5rem 1.25rem 1rem;
+          opacity: 0;
+          transform: translateY(-8px);
+          pointer-events: none;
+          transition: opacity 0.15s, transform 0.15s;
+        }
+        .nav-toggle:checked ~ .nav-links {
+          opacity: 1;
+          transform: translateY(0);
+          pointer-events: auto;
+        }
+        .nav-links a {
+          padding: 0.85rem 0;
+          font-size: 1.05rem;
+          font-weight: 600;
+          color: var(--text);
+          border-bottom: 1px solid #27272a;
+        }
+        .nav-links a:last-child {
+          border-bottom: 0;
+        }
+        .nav .btn {
+          padding: 0.5rem 0.85rem;
+          font-size: 0.9rem;
+        }
+      }
+      @media (max-width: 380px) {
+        .brand {
+          font-size: 0.95rem;
+        }
+        .brand img {
+          width: 24px;
+          height: 24px;
+        }
+        .nav .btn {
+          padding: 0.5rem 0.7rem;
+          font-size: 0.85rem;
+        }
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.7rem 1.1rem;
+        font-weight: 700;
+        border-radius: 0.7rem;
+        background: var(--accent);
+        color: var(--accent-dark);
+        font-size: 0.95rem;
+        line-height: 1;
+        transition: background 0.15s;
+      }
+      .btn:hover {
+        background: var(--accent-hot);
+        text-decoration: none;
+      }
+      .btn-large {
+        padding: 1rem 1.6rem;
+        font-size: 1.05rem;
+      }
+      .btn-secondary {
+        background: var(--bg-elev);
+        color: var(--text);
+        border: 1px solid #3f3f46;
+      }
+      .btn-secondary:hover {
+        background: #3f3f46;
+      }
+      .hero {
+        padding: 4.5rem 0 3.5rem;
+        background: radial-gradient(
+            70% 60% at 50% 0%,
+            rgba(251, 191, 36, 0.12),
+            transparent 70%
+          ),
+          var(--bg);
+      }
+      .hero-grid {
+        display: grid;
+        gap: 2.5rem;
+        grid-template-columns: 1fr;
+        align-items: center;
+      }
+      @media (min-width: 860px) {
+        .hero-grid {
+          grid-template-columns: 1.15fr 1fr;
+        }
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.3rem 0.7rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 999px;
+        background: var(--emerald-soft);
+        color: #6ee7b7;
+        margin-bottom: 1.25rem;
+      }
+      h1 {
+        font-size: clamp(2.1rem, 5vw, 3.4rem);
+        font-weight: 800;
+        margin: 0 0 1rem;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+      }
+      h1 .accent {
+        color: var(--accent);
+      }
+      .cycle-host {
+        display: inline-grid;
+        vertical-align: bottom;
+        position: relative;
+      }
+      .cycle-host::after {
+        /* Reserviert die Breite des längsten Wortes, damit Layout stabil bleibt */
+        content: 'Vereinsfest';
+        visibility: hidden;
+        grid-row: 1;
+        grid-column: 1;
+      }
+      .cycle-word {
+        grid-row: 1;
+        grid-column: 1;
+        color: var(--accent);
+        opacity: 0;
+        transform: translateY(0.35em);
+        animation: cycle-fade 15s infinite;
+      }
+      .cycle-word:nth-child(1) { animation-delay: 0s; }
+      .cycle-word:nth-child(2) { animation-delay: 3s; }
+      .cycle-word:nth-child(3) { animation-delay: 6s; }
+      .cycle-word:nth-child(4) { animation-delay: 9s; }
+      .cycle-word:nth-child(5) { animation-delay: 12s; }
+      @keyframes cycle-fade {
+        0%, 4% {
+          opacity: 0;
+          transform: translateY(0.35em);
+        }
+        8%, 18% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        22%, 100% {
+          opacity: 0;
+          transform: translateY(-0.35em);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cycle-word {
+          animation: none;
+        }
+        .cycle-word:nth-child(1) {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .lead {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        margin: 0 0 1.6rem;
+      }
+      .hero-cta {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .hero-meta {
+        margin-top: 1.4rem;
+        color: var(--text-faint);
+        font-size: 0.85rem;
+        display: flex;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+      }
+      .hero-meta span::before {
+        content: "✓ ";
+        color: var(--emerald);
+        font-weight: 700;
+      }
+      .preview {
+        background: linear-gradient(180deg, #1f1f22, #09090b);
+        border: 1px solid #27272a;
+        border-radius: 1.1rem;
+        padding: 1rem;
+        box-shadow: 0 25px 60px -25px rgba(0, 0, 0, 0.6);
+      }
+      .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+      }
+      .tile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+        padding: 0.6rem 0.5rem;
+        background: #27272a;
+        border: 1px solid #3f3f46;
+        border-radius: 0.7rem;
+        text-align: center;
+      }
+      .tile .ico {
+        color: var(--accent);
+        font-size: 1.4rem;
+        line-height: 1;
+        margin-bottom: 0.15rem;
+      }
+      .tile .name {
+        font-weight: 700;
+        font-size: 0.95rem;
+      }
+      .tile .size {
+        color: var(--text-muted);
+        font-size: 0.7rem;
+      }
+      .tile .price {
+        font-weight: 800;
+        font-size: 1.1rem;
+        margin-top: 0.1rem;
+      }
+      .tile .pf {
+        color: var(--accent);
+        font-size: 0.7rem;
+      }
+      .preview-foot {
+        margin-top: 0.7rem;
+        padding: 0.7rem 0.9rem;
+        background: rgba(16, 185, 129, 0.1);
+        border: 2px solid #10b981;
+        border-radius: 0.7rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .preview-foot .label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #6ee7b7;
+      }
+      .preview-foot .total {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #d1fae5;
+      }
+      section {
+        padding: 4rem 0;
+        border-top: 1px solid #27272a;
+      }
+      h2 {
+        font-size: clamp(1.5rem, 3vw, 2.1rem);
+        font-weight: 800;
+        margin: 0 0 0.6rem;
+        letter-spacing: -0.01em;
+      }
+      .section-lead {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        margin: 0 0 2.5rem;
+        max-width: 60ch;
+      }
+      .features {
+        display: grid;
+        gap: 1.25rem;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 720px) {
+        .features {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (min-width: 1024px) {
+        .features {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .feature {
+        background: var(--bg-elev);
+        border: 1px solid #3f3f46;
+        border-radius: 1rem;
+        padding: 1.4rem;
+      }
+      .feature-icon {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+      }
+      .feature h3 {
+        margin: 0 0 0.4rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+      .feature p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.55;
+      }
+      .steps {
+        display: grid;
+        gap: 1.25rem;
+        grid-template-columns: 1fr;
+        counter-reset: step;
+      }
+      @media (min-width: 720px) {
+        .steps {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .step {
+        background: var(--bg-elev);
+        border: 1px solid #3f3f46;
+        border-radius: 1rem;
+        padding: 1.4rem;
+        position: relative;
+      }
+      .step::before {
+        counter-increment: step;
+        content: counter(step);
+        position: absolute;
+        top: -0.7rem;
+        left: 1.4rem;
+        width: 1.7rem;
+        height: 1.7rem;
+        background: var(--accent);
+        color: var(--accent-dark);
+        font-weight: 800;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+      }
+      .step h3 {
+        margin: 0.5rem 0 0.4rem;
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+      .step p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+      .usecases {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-top: 1rem;
+      }
+      .uc {
+        padding: 0.55rem 1rem;
+        background: var(--bg-elev);
+        border: 1px solid #3f3f46;
+        border-radius: 999px;
+        font-size: 0.95rem;
+        font-weight: 500;
+      }
+      .privacy-card {
+        background: linear-gradient(
+          180deg,
+          rgba(16, 185, 129, 0.06),
+          var(--bg-elev)
+        );
+        border: 1px solid #10b981;
+        border-radius: 1rem;
+        padding: 1.6rem;
+      }
+      .privacy-list {
+        margin: 1rem 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.6rem;
+      }
+      .privacy-list li {
+        display: flex;
+        gap: 0.7rem;
+        align-items: flex-start;
+        color: var(--text-muted);
+      }
+      .privacy-list li::before {
+        content: "✓";
+        color: var(--emerald);
+        font-weight: 800;
+        flex-shrink: 0;
+      }
+      .privacy-list strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+      .cta-band {
+        text-align: center;
+        background: linear-gradient(
+          180deg,
+          rgba(251, 191, 36, 0.08),
+          var(--bg)
+        );
+      }
+      footer.site {
+        border-top: 1px solid #27272a;
+        padding: 2.5rem 0 3rem;
+        font-size: 0.9rem;
+        color: var(--text-faint);
+      }
+      .foot-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 720px) {
+        .foot-grid {
+          grid-template-columns: 1.2fr 1fr 1fr;
+        }
+      }
+      footer h4 {
+        margin: 0 0 0.7rem;
+        color: var(--text);
+        font-size: 0.95rem;
+        font-weight: 700;
+      }
+      footer ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.45rem;
+      }
+      footer a {
+        color: var(--text-muted);
+      }
+      .copyright {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #27272a;
+        font-size: 0.85rem;
+      }
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .by-line {
+        font-size: 0.85rem;
+        color: var(--text-faint);
+        margin: 0 0 1rem;
+      }
+      .by-line a {
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .we-section {
+        background: linear-gradient(
+          180deg,
+          var(--bg),
+          rgba(251, 191, 36, 0.06)
+        );
+        padding: 4.5rem 0;
+      }
+      .we-card {
+        background: linear-gradient(
+          135deg,
+          #1f1f22 0%,
+          #27272a 70%,
+          rgba(251, 191, 36, 0.08) 100%
+        );
+        border: 1px solid #3f3f46;
+        border-radius: 1.4rem;
+        padding: 2.2rem 1.6rem;
+        box-shadow: 0 25px 80px -30px rgba(0, 0, 0, 0.7);
+      }
+      @media (min-width: 720px) {
+        .we-card {
+          padding: 3rem 2.6rem;
+        }
+      }
+      .we-header {
+        text-align: center;
+        margin-bottom: 2.2rem;
+      }
+      .we-pill {
+        display: inline-block;
+        padding: 0.3rem 0.85rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        border-radius: 999px;
+        background: rgba(251, 191, 36, 0.15);
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+      .we-card h2 {
+        font-size: clamp(2rem, 5vw, 3rem);
+        margin: 0.2rem 0 1rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .we-dot {
+        color: var(--accent);
+      }
+      .we-lead {
+        max-width: 60ch;
+        margin: 0 auto;
+        color: var(--text-muted);
+        font-size: 1.05rem;
+      }
+      .demo-frame-wrap {
+        position: relative;
+        max-width: 1100px;
+        margin: 0 auto;
+        background: #1f1f22;
+        border: 1px solid #3f3f46;
+        border-radius: 1.2rem;
+        padding: 0.6rem;
+        box-shadow: 0 25px 80px -30px rgba(0, 0, 0, 0.6);
+      }
+      .demo-frame {
+        width: 100%;
+        height: clamp(560px, 75vh, 760px);
+        border: 0;
+        border-radius: 0.85rem;
+        background: #18181b;
+        display: block;
+      }
+      .demo-hint {
+        text-align: center;
+        margin: 1rem 0 0;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+      .demo-hint a {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .faq {
+        display: grid;
+        gap: 0.6rem;
+        max-width: 820px;
+      }
+      .faq details {
+        background: var(--bg-elev);
+        border: 1px solid #3f3f46;
+        border-radius: 0.9rem;
+      }
+      .faq details[open] {
+        background: #1f1f22;
+      }
+      .faq summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 1rem 1.3rem;
+        font-weight: 700;
+        font-size: 1.02rem;
+        position: relative;
+        padding-right: 2.6rem;
+      }
+      .faq summary::-webkit-details-marker {
+        display: none;
+      }
+      .faq summary::after {
+        content: "+";
+        position: absolute;
+        right: 1.2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.4rem;
+        font-weight: 400;
+        color: var(--accent);
+      }
+      .faq details[open] summary::after {
+        content: "−";
+      }
+      .faq .faq-body {
+        padding: 0 1.3rem 1.1rem;
+        color: var(--text-muted);
+        font-size: 0.97rem;
+        line-height: 1.6;
+      }
+      .faq .faq-body p {
+        margin: 0 0 0.7rem;
+      }
+      .faq .faq-body p:last-child {
+        margin-bottom: 0;
+      }
+      .faq .faq-body code {
+        background: #18181b;
+        padding: 0.1rem 0.4rem;
+        border-radius: 0.3rem;
+        font-size: 0.88em;
+      }
+      .github-banner {
+        background: linear-gradient(135deg, #1f1f22, #27272a);
+        border: 1px solid #3f3f46;
+        border-radius: 1rem;
+        padding: 1.4rem 1.6rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+      .github-banner svg {
+        flex-shrink: 0;
+        color: #fff;
+      }
+      .github-banner .gh-text {
+        flex: 1;
+        min-width: 200px;
+      }
+      .github-banner h3 {
+        margin: 0 0 0.2rem;
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+      .github-banner p {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+      .we-services {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 1fr;
+        margin-bottom: 2rem;
+      }
+      @media (min-width: 720px) {
+        .we-services {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .we-service {
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid #3f3f46;
+        border-radius: 0.9rem;
+        padding: 1.2rem 1.1rem;
+      }
+      .we-service h3 {
+        margin: 0 0 0.4rem;
+        font-size: 1rem;
+        font-weight: 700;
+      }
+      .we-service p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+      .we-icon {
+        font-size: 1.7rem;
+        margin-bottom: 0.4rem;
+      }
+      .we-cta-row {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .we-fineprint {
+        text-align: center;
+        margin: 1.4rem 0 0;
+        color: var(--text-faint);
+        font-size: 0.9rem;
+      }
+
+      /* === Sync & Display: zwei farb-codierte Tracks ============= */
+      .sync-tracks {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.4rem;
+        margin: 2rem 0;
+      }
+      @media (min-width: 820px) {
+        .sync-tracks {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .track {
+        position: relative;
+        background: var(--bg-elev);
+        border: 1px solid #3f3f46;
+        border-radius: 1rem;
+        padding: 1.6rem;
+        overflow: hidden;
+      }
+      .track::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 4px;
+        background: var(--accent);
+      }
+      .track--sync::before {
+        background: linear-gradient(90deg, #10b981, #34d399);
+      }
+      .track--display::before {
+        background: linear-gradient(90deg, #d946ef, #f0abfc);
+      }
+      .track-head {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 0.6rem;
+      }
+      .track-icon {
+        width: 2.6rem;
+        height: 2.6rem;
+        border-radius: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+      }
+      .track--sync .track-icon {
+        background: rgba(16, 185, 129, 0.15);
+        color: #6ee7b7;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+      .track--display .track-icon {
+        background: rgba(217, 70, 239, 0.15);
+        color: #f0abfc;
+        border: 1px solid rgba(217, 70, 239, 0.3);
+      }
+      .track h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+      .track-tag {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-top: 0.15rem;
+      }
+      .track--sync .track-tag {
+        color: #6ee7b7;
+      }
+      .track--display .track-tag {
+        color: #f0abfc;
+      }
+      .track-lead {
+        margin: 0 0 1.2rem;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.55;
+      }
+      .track-steps {
+        list-style: none;
+        margin: 0 0 1.4rem;
+        padding: 0;
+        counter-reset: track-step;
+        position: relative;
+      }
+      /* Vertikale Verbindungslinie zwischen den Step-Badges */
+      .track-steps::before {
+        content: "";
+        position: absolute;
+        left: 1.05rem;
+        top: 1rem;
+        bottom: 1rem;
+        width: 2px;
+        background: linear-gradient(
+          180deg,
+          transparent 0%,
+          #3f3f46 8%,
+          #3f3f46 92%,
+          transparent 100%
+        );
+        z-index: 0;
+      }
+      .track-steps li {
+        counter-increment: track-step;
+        display: flex;
+        gap: 0.85rem;
+        padding: 0.7rem 0.85rem 0.7rem 0.65rem;
+        margin-bottom: 0.45rem;
+        background: rgba(0, 0, 0, 0.22);
+        border-radius: 0.55rem;
+        color: var(--text-muted);
+        font-size: 0.93rem;
+        line-height: 1.55;
+        align-items: flex-start;
+        position: relative;
+        z-index: 1;
+      }
+      .track-steps li:last-child {
+        margin-bottom: 0;
+      }
+      .track-steps li::before {
+        content: counter(track-step);
+        flex-shrink: 0;
+        width: 1.85rem;
+        height: 1.85rem;
+        border-radius: 0.45rem;
+        font-size: 0.9rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -0.05rem;
+        box-shadow: 0 0 0 3px var(--bg-elev);
+      }
+      .track--sync .track-steps li::before {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: #052e1f;
+      }
+      .track--display .track-steps li::before {
+        background: linear-gradient(135deg, #d946ef, #f0abfc);
+        color: #3a0a3f;
+      }
+      .track-steps li strong {
+        color: var(--text);
+        font-weight: 700;
+      }
+      .track-checklist {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.88rem;
+        color: var(--text-muted);
+      }
+      .track-checklist li {
+        padding-left: 1.3rem;
+        position: relative;
+        margin-bottom: 0.35rem;
+        line-height: 1.5;
+      }
+      .track-checklist li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        font-weight: 800;
+      }
+      .track--sync .track-checklist li::before {
+        color: #34d399;
+      }
+      .track--display .track-checklist li::before {
+        color: #f0abfc;
+      }
+      .track-divider {
+        margin: 1rem 0 0.5rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-faint);
+      }
+
+      /* === Architektur-Diagramm SVG ============= */
+      .arch-diagram {
+        background: var(--bg-elev);
+        border: 1px solid #3f3f46;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin: 1.5rem 0 0;
+        overflow-x: auto;
+      }
+      .arch-diagram svg {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      @media (max-width: 640px) {
+        /* Auf schmalen Screens würde der SVG-Text unleserlich klein —
+           die textuellen Tracks decken denselben Inhalt voll ab. */
+        .arch-diagram {
+          display: none;
+        }
+      }
+      .arch-caption {
+        text-align: center;
+        font-size: 0.82rem;
+        color: var(--text-faint);
+        margin-top: 0.8rem;
+      }
+
+      /* === Use-Case-Cards mit Detail ============= */
+      .case-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+        margin: 1.5rem 0 0;
+      }
+      @media (min-width: 720px) {
+        .case-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (min-width: 1080px) {
+        .case-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .case {
+        background: var(--bg-elev);
+        border: 1px solid #3f3f46;
+        border-radius: 1rem;
+        padding: 1.4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .case-emoji {
+        font-size: 1.8rem;
+        line-height: 1;
+      }
+      .case-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+      .case h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+      .case-badge {
+        background: rgba(251, 191, 36, 0.12);
+        color: var(--accent);
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .case-desc {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.55;
+      }
+      .case-setup {
+        margin: 0.4rem 0 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
+      .case-setup li {
+        padding-left: 1.2rem;
+        position: relative;
+        margin-bottom: 0.3rem;
+      }
+      .case-setup li::before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .case-tip {
+        margin-top: auto;
+        padding: 0.65rem 0.8rem;
+        background: rgba(16, 185, 129, 0.08);
+        border-left: 3px solid var(--emerald);
+        border-radius: 0.4rem;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
+      .case-tip strong {
+        color: #6ee7b7;
+      }
+
+      /* === Limits-Hinweis-Box ============= */
+      .limits-box {
+        margin-top: 2rem;
+        padding: 1.4rem 1.6rem;
+        background: linear-gradient(
+          180deg,
+          rgba(251, 191, 36, 0.05),
+          var(--bg-elev)
+        );
+        border: 1px solid rgba(251, 191, 36, 0.2);
+        border-radius: 1rem;
+      }
+      .limits-box h3 {
+        margin: 0 0 0.7rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .limits-grid {
+        display: grid;
+        gap: 0.5rem 1.5rem;
+        grid-template-columns: 1fr;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0.92rem;
+        color: var(--text-muted);
+      }
+      @media (min-width: 700px) {
+        .limits-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .limits-grid li {
+        padding-left: 1.4rem;
+        position: relative;
+        line-height: 1.5;
+      }
+      .limits-grid li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: 800;
+      }
+      .limits-grid li strong {
+        color: var(--text);
+      }
+    </style>
+  </head>
+
+  <body>
+    <a class="visually-hidden" href="#main">Zum Hauptinhalt springen</a>
+
+    <header class="site" role="banner">
+      <div class="container nav">
+        <a class="brand" href="/" aria-label="Bierwagen Kasse Startseite">
+          <img src="/icon.svg" alt="" width="28" height="28" />
+          Bierwagen Kasse
+        </a>
+        <input
+          type="checkbox"
+          id="nav-toggle"
+          class="nav-toggle"
+          aria-label="Menü"
+        />
+        <label for="nav-toggle" class="nav-toggle-label" aria-hidden="true">
+          <svg
+            class="icon-open"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+          >
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+          <svg
+            class="icon-close"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+          >
+            <line x1="6" y1="6" x2="18" y2="18" />
+            <line x1="18" y1="6" x2="6" y2="18" />
+          </svg>
+        </label>
+        <nav class="nav-links" aria-label="Hauptnavigation">
+          <a href="#features">Features</a>
+          <a href="#sync">Sync &amp; Display</a>
+          <a href="/dokumentation/">Anleitung</a>
+          <a href="#faq">FAQ</a>
+          <a
+            href="https://github.com/Webexperte-Berlin/bierwagen-kasse"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GitHub</a
+          >
+        </nav>
+        <a class="btn" href="/app/" rel="bookmark">App öffnen →</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-h1">
+        <div class="container hero-grid">
+          <div>
+            <p class="by-line">
+              Ein Tool von
+              <a
+                href="https://webexperte.berlin"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Webexperte.Berlin</a
+              >
+            </p>
+            <span class="pill">Kostenlos · Ohne Account · DSGVO-konform</span>
+            <h1 id="hero-h1">
+              Die Touch-Kasse für<wbr />
+              <span class="cycle-host" aria-label="Vereinsfest, Bierwagen, Imbiss, Grillstand, Foodtruck">
+                <span class="cycle-word">Vereinsfest</span>
+                <span class="cycle-word">Bierwagen</span>
+                <span class="cycle-word">Imbiss</span>
+                <span class="cycle-word">Grillstand</span>
+                <span class="cycle-word">Foodtruck</span>
+              </span>,
+              die einfach funktioniert.
+            </h1>
+            <p class="lead">
+              Produkt antippen, Pfand verwalten, Wechselgeld berechnen — alles im
+              Browser, ohne Anmeldung, ohne Bürokratie. Egal ob
+              <strong>Vereinsfest</strong>, <strong>Bierwagen</strong>,
+              <strong>Imbiss</strong>, <strong>Grillstand</strong> oder
+              <strong>Foodtruck</strong> — die Kasse ist sofort einsatzbereit
+              und passt sich deinem Sortiment an. Entwickelt &amp;
+              bereitgestellt von
+              <a
+                href="https://webexperte.berlin"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Webexperte.Berlin</a
+              >.
+            </p>
+            <div class="hero-cta">
+              <a class="btn btn-large" href="/app/" rel="bookmark">
+                App öffnen →
+              </a>
+              <a class="btn btn-secondary btn-large" href="#features">
+                Features ansehen
+              </a>
+            </div>
+            <div class="hero-meta">
+              <span>Sofort startbar</span>
+              <span>Offline-fähig</span>
+              <span>Tablet &amp; Smartphone</span>
+              <span>Open Source</span>
+            </div>
+          </div>
+
+          <div class="preview" aria-hidden="true">
+            <div class="preview-grid">
+              <div class="tile">
+                <div class="ico">🍺</div>
+                <div class="name">Pils</div>
+                <div class="size">0,5 L</div>
+                <div class="price">4,50 €</div>
+                <div class="pf">+ Glas 1,00 €</div>
+              </div>
+              <div class="tile">
+                <div class="ico">🍺</div>
+                <div class="name">Helles</div>
+                <div class="size">0,5 L</div>
+                <div class="price">4,50 €</div>
+                <div class="pf">+ Glas 1,00 €</div>
+              </div>
+              <div class="tile">
+                <div class="ico">🌾</div>
+                <div class="name">Weizen</div>
+                <div class="size">0,5 L</div>
+                <div class="price">4,80 €</div>
+                <div class="pf">+ Glas 1,00 €</div>
+              </div>
+              <div class="tile">
+                <div class="ico">🍋</div>
+                <div class="name">Radler</div>
+                <div class="size">0,5 L</div>
+                <div class="price">4,30 €</div>
+                <div class="pf">+ Glas 1,00 €</div>
+              </div>
+            </div>
+            <div class="preview-foot">
+              <span class="label">Zu zahlen</span>
+              <span class="total">18,30 €</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" aria-labelledby="features-h2">
+        <div class="container">
+          <h2 id="features-h2">Alle Funktionen im Detail</h2>
+          <p class="section-lead">
+            Ein vollständiger Überblick über jede Funktion — was sie tut, wie
+            sie sich anfühlt und wann sie hilft.
+          </p>
+
+          <div class="features">
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">🍺</div>
+              <h3>Touch-Bestellung mit großem Drink-Grid</h3>
+              <p>
+                Bildschirm-füllendes Raster mit großen Kacheln pro Getränk.
+                <strong>Ein Tap</strong> fügt eine Einheit hinzu, ein zweiter
+                Tap erhöht den Zähler. Auf jeder Kachel siehst du Icon,
+                Bezeichnung, Größe, Preis und — falls aktiv — Restbestand und
+                Happy-Hour-Marker. <strong>Long-Press</strong> (gedrückt halten)
+                öffnet einen +5/+10-Schnellzähler für volle Tische oder
+                Hektoliter-Bestellungen.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">🚫</div>
+              <h3>Storno-Modus ohne Versehen</h3>
+              <p>
+                Toggle-Button im Header schaltet die App in den Storno-Modus —
+                erkennbar am durchgehenden roten Banner und roter
+                Kachelumrandung. Jeder Tap entfernt jetzt eine Einheit statt
+                hinzuzufügen. Wird automatisch deaktiviert, sobald die
+                Bestellung leer ist. Verhindert teure Verklicker während der
+                Stoßzeiten.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">↶</div>
+              <h3>Pfand-Handling, sauber getrennt</h3>
+              <p>
+                Beliebig viele Pfand-Kategorien (z.B. Glas 1&nbsp;€, Maßkrug
+                5&nbsp;€). Pro Getränk wird die passende Kategorie hinterlegt,
+                der Pfand-Betrag wird automatisch zur Bestellung addiert. Die
+                <strong>Pfand-Rückgabe</strong> läuft in einem eigenen Bereich
+                — auf dem Smartphone als Mini-Bar am unteren Rand, auf dem
+                Tablet als rechte Spalte. Rückgaben werden vom Gesamtbetrag
+                abgezogen.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">💵</div>
+              <h3>Wechselgeld-Rechner mit smarten Vorschlägen</h3>
+              <p>
+                Bei jedem Total werden bis zu drei sinnvolle Vorschläge
+                generiert: <strong>nächster Euro</strong>, <strong>nächster
+                5er-Schritt</strong>, <strong>nächster Schein</strong>
+                (10/20/50/100&nbsp;€). Ein Tap genügt, das Wechselgeld
+                aktualisiert in Echtzeit. Eigener Betrag per
+                Bildschirm-Numpad. Bei Beträgen über 200&nbsp;€ skaliert
+                die Vorschlags-Logik automatisch (nächster 50er, 100er,
+                500er).
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">💰</div>
+              <h3>Trinkgeld-Modul (optional)</h3>
+              <p>
+                In den Einstellungen aktivierbar: drei automatische
+                Aufrund-Vorschläge (z.B. „auf 6&nbsp;€",
+                „auf 10&nbsp;€") basierend auf der aktuellen Summe, plus
+                Eingabe eines beliebigen Betrags per Numpad. Trinkgeld geht
+                separat in die Tagesbilanz und in den CSV-Export.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">✨</div>
+              <h3>Happy Hour pro Getränk</h3>
+              <p>
+                Zeitfenster (z.B. 17–19&nbsp;Uhr) und Sonderpreis pro Getränk
+                hinterlegen. Die App wechselt automatisch zwischen Normal-
+                und Happy-Hour-Preis basierend auf der Geräte-Uhrzeit. Während
+                Happy Hour zeigt die Kachel ein
+                <strong>fuchsia-farbenes „HH"-Badge</strong>; in der
+                Bestellzeile steht der reguläre Preis durchgestrichen daneben.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">📦</div>
+              <h3>Bestand pro Getränk (optional)</h3>
+              <p>
+                Anfangsbestand pro Drink eingeben (z.B. „60 Pils") — die Kachel
+                zeigt unten rechts <strong>live die Restmenge</strong>. Bei
+                ≤&nbsp;5 Stück färbt sich das Badge gelb (Warnung), bei 0 wird
+                die Kachel automatisch gesperrt und zeigt „leer". Bestand wird
+                aus der Tagesbilanz aggregiert — Bestellungen, die noch nicht
+                abgeschlossen sind, werden bei der Lock-Logik mitgezählt.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">📓</div>
+              <h3>Tagesbilanz mit Pro-Produkt-Aggregat</h3>
+              <p>
+                Jeder Klick auf <strong>„Kassieren"</strong> schreibt
+                den abgeschlossenen Verkauf in die Tagesbilanz: Positionen,
+                Pfand, Trinkgeld, Zahlart und das Erfassungs-Gerät. Die Bilanz
+                lässt sich öffnen, einzelne Einträge editieren und löschen.
+                Pro Produkt zeigt sie die verkaufte Stückzahl und den Umsatz
+                — dazu die Gesamt-Übersicht mit Anfangsbestand der Kasse,
+                Brutto-Umsatz, Trinkgeld und erwartetem Soll-Kassenstand.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">📤</div>
+              <h3>Export, Import &amp; Drucken</h3>
+              <p>
+                Drei Export-Wege für die Bilanz:
+                <strong>CSV</strong> für Excel/Numbers (mit deutschen
+                Dezimalstellen + UTF-8 BOM, Excel-direkt-öffnen-tauglich),
+                <strong>JSON</strong> als Backup zum späteren
+                Wiederimportieren, <strong>Druck-View</strong> in
+                DIN-A4-optimiertem Layout mit allen Bestellungen,
+                Pro-Produkt-Aggregat und Soll-Kassenstand. Die Sortiments-Konfig
+                lässt sich ebenfalls als JSON exportieren und auf andere Geräte
+                übertragen.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">📡</div>
+              <h3>Mehrgeräte-Sync per QR-Code</h3>
+              <p>
+                <strong>Bis zu 5 Geräte</strong> teilen sich Tagesbilanz,
+                Bestand und Sortiment in Echtzeit. Pairing per QR-Code direkt
+                zwischen den Geräten via WebRTC — kein Cloud-Server, kein
+                externer Signaling-Service. Jedes Gerät bekommt einen
+                Gerätenamen (z.B. „Theke", „Hilfsstand"), der pro
+                Bilanz-Eintrag und in der Peer-Liste erscheint. Konflikte
+                werden per <strong>CRDT (Yjs)</strong> deterministisch
+                gemerged. Die Hauptkasse kann einzelne Nebenkassen trennen und gibt das Sortiment für alle vor.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">📺</div>
+              <h3>Kundendisplay (optional)</h3>
+              <p>
+                Ein Tablet oder Smartphone wird zum Vollbild-Kundendisplay —
+                zeigt die <strong>aktuelle Bestellung des Kassen-Geräts</strong>
+                in großer, gut lesbarer Schrift: jede Position einzeln,
+                Zwischensummen, Pfand-Aufschläge, Happy-Hour-Markierung und
+                ganz dick den Gesamtbetrag. Bei Bargeld-Eingabe erscheint
+                automatisch „Gegeben/Rückgeld" in fetter Schrift. Pairing per
+                QR-Code identisch zum Sync-Pairing. Der Kunde sieht jeden
+                Schritt des Verkaufs mit.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">🌍</div>
+              <h3>Mehrsprachig (DE / EN / FR / IT)</h3>
+              <p>
+                Komplette Übersetzung in vier Sprachen — umschaltbar in
+                Echtzeit über die Einstellungen. Praktisch für internationale
+                Crews oder grenznahe Veranstaltungen. Alle UI-Texte,
+                Status-Meldungen, Anleitungen und Datenschutz-Hinweise sind
+                übersetzt. Sprachwahl bleibt pro Gerät lokal (wird nicht
+                synchronisiert).
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">🌓</div>
+              <h3>Hell- und Dunkelmodus</h3>
+              <p>
+                Zwei Themes, vollständig durchgestaltet (nicht nur invertierte
+                Farben). Dunkel ist Default — ideal für Abendveranstaltungen
+                und schont den Tablet-Akku. Hell für sonnige
+                Outdoor-Veranstaltungen mit greller Umgebung. Pro Gerät
+                separat einstellbar.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">📲</div>
+              <h3>PWA — Installierbar &amp; Offline-fähig</h3>
+              <p>
+                Als Web-App installierbar (Home-Screen-Icon auf iOS/Android,
+                Vollbild ohne Browser-Chrome). Service Worker hält die App
+                <strong>komplett offline</strong> lauffähig — einmal aufgerufen
+                läuft sie auch ohne Internet. Funk weg? Stromausfall? Kein
+                Problem, die laufende Bestellung bleibt im Speicher.
+                Tagesbilanz wird in IndexedDB persistiert und übersteht
+                jeden Tab-Crash und Reload.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">🔊</div>
+              <h3>Akustisches Feedback</h3>
+              <p>
+                Jede Bestellungs-Aktion gibt ein kurzes Bestätigungs-Signal —
+                hilfreich beim schnellen Tippen ohne Blick auf den Bildschirm.
+                Add, Remove und Long-Press haben unterschiedliche Töne. Per
+                Header-Toggle ein-/ausschaltbar, persistent pro Gerät.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">🛡️</div>
+              <h3>Datensparsam &amp; DSGVO-konform</h3>
+              <p>
+                Kein Backend, keine Anmeldung, keine Cookies, keine
+                Drittanbieter-Skripte. Konfiguration und Tagesbilanz werden
+                lokal im Browser gespeichert (localStorage + IndexedDB) und
+                verlassen das Gerät nicht. Wenn Sync aktiviert ist, fließen
+                Daten <strong>direkt zwischen den Geräten</strong> via
+                WebRTC — kein Cloud-Server, kein Signaling-Service.
+                Per „Alles zurücksetzen" jederzeit löschbar.
+              </p>
+            </article>
+
+            <article class="feature">
+              <div class="feature-icon" aria-hidden="true">🎨</div>
+              <h3>26+ Lucide-Icons fürs Sortiment</h3>
+              <p>
+                Über 26 vorausgewählte Icons aus der Lucide-Bibliothek decken
+                Getränke (Bier, Wein, Schnaps, Säfte, Wasser, Kaffee), Snacks
+                (Pizza, Burger, Pommes, Brezel) und mehr ab. Pro Getränk frei
+                wählbar. Macht das Drink-Grid auf einen Blick scanbar — keine
+                Wand aus Text.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="sync" aria-labelledby="sync-h2">
+        <div class="container">
+          <h2 id="sync-h2">Mehrgeräte-Sync &amp; Kundendisplay</h2>
+          <p class="section-lead">
+            Zwei oder mehr Geräte (Theke, Hilfsstand, Mobile-Order, Kunden-
+            Display) verbinden sich per QR-Code direkt aneinander. Tagesbilanz,
+            Bestand und Sortiment laufen in Echtzeit synchron — ohne externen
+            Server, ohne Cloud-Konto, ohne Signaling-Service. Alles via
+            <strong>WebRTC Peer-zu-Peer im lokalen WLAN</strong>.
+          </p>
+
+          <!-- Architektur-Skizze: Hauptkasse + Nebenkasse (mit/ohne eigenem Display) -->
+          <div class="arch-diagram" aria-hidden="true">
+            <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="emerald-grad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#10b981" />
+                  <stop offset="100%" stop-color="#34d399" />
+                </linearGradient>
+                <linearGradient id="fuchsia-grad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#d946ef" />
+                  <stop offset="100%" stop-color="#f0abfc" />
+                </linearGradient>
+              </defs>
+
+              <!-- ===== Verbindungslinien Hauptkasse → Mittelreihe ===== -->
+              <line x1="360" y1="80" x2="160" y2="170" stroke="url(#emerald-grad)" stroke-width="2" stroke-dasharray="5 4" />
+              <line x1="360" y1="80" x2="360" y2="170" stroke="url(#emerald-grad)" stroke-width="2" stroke-dasharray="5 4" />
+              <line x1="360" y1="80" x2="560" y2="170" stroke="url(#fuchsia-grad)" stroke-width="2" stroke-dasharray="5 4" />
+
+              <!-- Verbindung Nebenkasse Hilfsstand → eigenes Display -->
+              <line x1="160" y1="240" x2="160" y2="290" stroke="url(#fuchsia-grad)" stroke-width="2" stroke-dasharray="5 4" />
+
+              <!-- Beschriftungen der Verbindungen (Hauptkassen-Ebene) -->
+              <text x="240" y="135" font-size="11" fill="#6ee7b7" font-weight="700" letter-spacing="0.5">SYNC</text>
+              <text x="372" y="135" font-size="11" fill="#6ee7b7" font-weight="700" letter-spacing="0.5">SYNC</text>
+              <text x="475" y="135" font-size="11" fill="#f0abfc" font-weight="700" letter-spacing="0.5">DISPLAY</text>
+              <!-- Beschriftung Nebenkasse→Display -->
+              <text x="170" y="270" font-size="10" fill="#f0abfc" font-weight="700" letter-spacing="0.5">DISPLAY</text>
+
+              <!-- ===== Hauptkasse ===== -->
+              <g>
+                <rect x="290" y="25" width="140" height="55" rx="10" fill="rgba(251,191,36,0.12)" stroke="#fbbf24" stroke-width="1.5" />
+                <text x="360" y="48" text-anchor="middle" font-size="15" font-weight="800" fill="#fef3c7">Hauptkasse</text>
+                <text x="360" y="68" text-anchor="middle" font-size="11" fill="#a1a1aa">„Theke"</text>
+              </g>
+
+              <!-- ===== Nebenkasse 1 (mit eigenem Display) ===== -->
+              <g>
+                <rect x="90" y="170" width="140" height="55" rx="10" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5" />
+                <text x="160" y="193" text-anchor="middle" font-size="14" font-weight="700" fill="#6ee7b7">Nebenkasse</text>
+                <text x="160" y="213" text-anchor="middle" font-size="11" fill="#a1a1aa">„Hilfsstand"</text>
+              </g>
+
+              <!-- ===== Nebenkasse 2 ===== -->
+              <g>
+                <rect x="290" y="170" width="140" height="55" rx="10" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5" />
+                <text x="360" y="193" text-anchor="middle" font-size="14" font-weight="700" fill="#6ee7b7">Nebenkasse</text>
+                <text x="360" y="213" text-anchor="middle" font-size="11" fill="#a1a1aa">„Mobile-Order"</text>
+              </g>
+
+              <!-- ===== Display am Hauptkasse ===== -->
+              <g>
+                <rect x="490" y="170" width="140" height="55" rx="10" fill="rgba(217,70,239,0.12)" stroke="#d946ef" stroke-width="1.5" />
+                <text x="560" y="193" text-anchor="middle" font-size="14" font-weight="700" fill="#f0abfc">Display</text>
+                <text x="560" y="213" text-anchor="middle" font-size="11" fill="#a1a1aa">„Kunden-Anzeige"</text>
+              </g>
+
+              <!-- ===== Display am Nebenkasse Hilfsstand ===== -->
+              <g>
+                <rect x="90" y="290" width="140" height="55" rx="10" fill="rgba(217,70,239,0.12)" stroke="#d946ef" stroke-width="1.5" />
+                <text x="160" y="313" text-anchor="middle" font-size="14" font-weight="700" fill="#f0abfc">Display</text>
+                <text x="160" y="333" text-anchor="middle" font-size="11" fill="#a1a1aa">„Hilfsstand-Anzeige"</text>
+              </g>
+            </svg>
+            <p class="arch-caption">
+              Stern-Topologie mit Hauptkasse: jedes Kassen-Gerät (Hauptkasse oder Nebenkasse)
+              kann eigene Displays anbinden. Sync-Daten laufen zentral über
+              die Hauptkasse, Order-Streams zu Displays jeweils direkt vom
+              kassierenden Gerät.
+            </p>
+          </div>
+
+          <!-- Zwei farbcodierte Tracks: Sync vs. Display -->
+          <div class="sync-tracks">
+            <article class="track track--sync">
+              <div class="track-head">
+                <div class="track-icon">📡</div>
+                <div>
+                  <h3>Geräte-Sync</h3>
+                  <span class="track-tag">Hauptkasse ↔ Nebenkasse</span>
+                </div>
+              </div>
+              <p class="track-lead">
+                Mehrere Kassen-Tablets teilen sich Bilanz, Bestand und
+                Sortiment in Echtzeit. Ideal für Theke + Hilfsstand,
+                Mobile-Order, oder Backup-Tablet bei Schichtwechsel.
+              </p>
+
+              <div class="track-divider">Pairing in 4 Schritten</div>
+              <ol class="track-steps">
+                <li>
+                  Auf jedem Gerät den <strong>Gerätenamen</strong> vergeben
+                  (z.B. „Theke", „Hilfsstand").
+                </li>
+                <li>
+                  Hauptkasse tippt
+                  <strong>„Als Hauptkasse starten"</strong> → QR-Code
+                  erscheint.
+                </li>
+                <li>
+                  Nebenkasse tippt <strong>„Mit Hauptkasse verbinden"</strong> → scannt den
+                  Code der Hauptkasse → eigener Antwort-Code erscheint.
+                </li>
+                <li>
+                  Hauptkasse scannt den Antwort-Code → 🟢 verbunden, Daten laufen
+                  synchron.
+                </li>
+              </ol>
+
+              <div class="track-divider">Was wird synchronisiert</div>
+              <ul class="track-checklist">
+                <li>Alle abgeschlossenen Bestellungen (Tagesbilanz)</li>
+                <li>Restbestand pro Getränk (gemeinsam runtergezählt)</li>
+                <li>Sortiment, Pfand-Kategorien, Happy Hour</li>
+                <li>Feature-Flags und Anfangsbestand der Kasse</li>
+              </ul>
+
+              <div class="track-divider">Was bleibt lokal</div>
+              <ul class="track-checklist">
+                <li>Laufende (noch nicht abgeschlossene) Bestellung</li>
+                <li>Theme (hell/dunkel), Sprache, Sound an/aus</li>
+                <li>Tagesbilanz-Sicht ist nur auf der Hauptkasse</li>
+              </ul>
+            </article>
+
+            <article class="track track--display">
+              <div class="track-head">
+                <div class="track-icon">📺</div>
+                <div>
+                  <h3>Kundendisplay</h3>
+                  <span class="track-tag">Kasse → Display</span>
+                </div>
+              </div>
+              <p class="track-lead">
+                Ein zusätzliches Tablet — z.B. mit Halterung Richtung Kunde —
+                wird zum Vollbild-Display. Zeigt jede Position der laufenden
+                Bestellung in großer Schrift, Pfand-Aufschlag, ganz dick den
+                Gesamtbetrag. Bei Bargeld-Check erscheint
+                „Gegeben/Rückgeld" für den Kunden sichtbar.
+              </p>
+
+              <div class="track-divider">Pairing in 4 Schritten</div>
+              <ol class="track-steps">
+                <li>
+                  Display-Tablet:
+                  <strong>„Als Display nutzen"</strong> → UI wechselt in
+                  Vollbild-Display-Modus.
+                </li>
+                <li>
+                  Kassen-Gerät:
+                  <strong>„Display verbinden"</strong> → QR-Code erscheint.
+                </li>
+                <li>
+                  Display scannt den QR → eigener Antwort-Code erscheint.
+                </li>
+                <li>
+                  Kasse scannt den Antwort-Code → 🟣 verbunden, Bestellung
+                  läuft live aufs Display.
+                </li>
+              </ol>
+
+              <div class="track-divider">Was sieht der Kunde</div>
+              <ul class="track-checklist">
+                <li>Jede Position einzeln mit Anzahl, Größe, Preis</li>
+                <li>Pfand-Aufschlag und Pfand-Rückgaben getrennt</li>
+                <li>
+                  Happy-Hour-Marker mit durchgestrichenem Originalpreis
+                </li>
+                <li>
+                  Großer Gesamtbetrag — aus 2&nbsp;m Entfernung lesbar
+                </li>
+                <li>
+                  Bei Bargeld: „Gegeben" und „Rückgeld" mit ✓ wenn passend
+                </li>
+              </ul>
+
+              <div class="track-divider">Setup-Tipps</div>
+              <ul class="track-checklist">
+                <li>Tablet querformat, fest am Wagen montieren</li>
+                <li>Vollbild-Modus aktivieren (Header-Icon)</li>
+                <li>Helligkeit max für Outdoor-Sichtbarkeit</li>
+                <li>1:1-Pärchen — pro Kasse ein eigenes Display möglich</li>
+              </ul>
+            </article>
+          </div>
+
+          <!-- Limitierungen klar kommuniziert -->
+          <div class="limits-box">
+            <h3>⚠ Was die No-Server-Architektur bedeutet</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0 0 0.9rem">
+              Die App hat bewusst keinen zentralen Server — das schützt
+              Daten und kostet nichts. Diese Trade-offs solltest du kennen:
+            </p>
+            <ul class="limits-grid">
+              <li>
+                <strong>Selbes WLAN nötig:</strong> beide Geräte müssen
+                im gleichen Netzwerk sein. Über Mobilfunk geht's nicht.
+              </li>
+              <li>
+                <strong>Nach Reload neu pairen:</strong> Browser-Refresh =
+                neue Verbindung nötig. App zeigt aber direkt
+                „Reconnect mit X"-Button für 1-Klick-Wiederverbindung.
+              </li>
+              <li>
+                <strong>Kamera erforderlich:</strong> beim ersten Pairing
+                muss jedes Gerät den QR vom anderen scannen können.
+              </li>
+              <li>
+                <strong>Public Hotspots oft blockiert:</strong> Hotel-/
+                Café-WLANs blocken P2P. Lösung: eigener
+                Smartphone-Hotspot.
+              </li>
+              <li>
+                <strong>Heartbeat erkennt Ausfall in 12&nbsp;Sek:</strong>
+                wenn ein Gerät stumm offline geht, fällt es nach max.
+                12&nbsp;Sek aus der Peer-Liste.
+              </li>
+              <li>
+                <strong>Stern-Topologie:</strong> alle Nebenkassen und Displays
+                verbinden sich mit der Hauptkasse, nicht untereinander. Hauptkasse =
+                Quelle der Wahrheit fürs Sortiment.
+              </li>
+            </ul>
+            <p style="color: var(--text-faint); font-size: 0.85rem; margin: 1rem 0 0">
+              Vollständige Beschreibung im
+              <a href="/dokumentation/#sync">Sync-Kapitel der Anleitung</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="workflow" aria-labelledby="workflow-h2">
+        <div class="container">
+          <h2 id="workflow-h2">In drei Schritten startklar</h2>
+          <p class="section-lead">
+            Vom URL-Aufruf bis zum ersten ausgeschenkten Bier vergehen
+            realistisch fünf Minuten.
+          </p>
+          <div class="steps">
+            <article class="step">
+              <h3>Drinks &amp; Pfand anlegen</h3>
+              <p>
+                Im Konfig-Tab Getränke und Pfand-Kategorien einmal eingeben.
+                Wird automatisch im Browser gespeichert, kann als JSON für
+                jedes Fest kopiert werden.
+              </p>
+            </article>
+            <article class="step">
+              <h3>Tablet aufstellen, App öffnen</h3>
+              <p>
+                URL aufrufen oder PWA-Icon antippen. Vollbildmodus,
+                Querformat, fertig. Funktioniert auf jedem Browser ab den
+                letzten 5 Jahren.
+              </p>
+            </article>
+            <article class="step">
+              <h3>Anzapfen &amp; abkassieren</h3>
+              <p>
+                Drinks antippen, Pfand zurücknehmen, Bargeld als Chip wählen —
+                Wechselgeld zeigt sich automatisch. „Kassieren" leert
+                alles für den nächsten Kunden.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="usecases" aria-labelledby="usecases-h2">
+        <div class="container">
+          <h2 id="usecases-h2">Sechs konkrete Setup-Beispiele</h2>
+          <p class="section-lead">
+            Vom kleinen Sommerfest bis zum großen Festzelt mit drei Theken —
+            so sehen typische Setups in der Praxis aus. Wähle das Szenario,
+            das deinem am nächsten kommt.
+          </p>
+
+          <div class="case-grid">
+            <!-- 1: Solo -->
+            <article class="case">
+              <div class="case-emoji">🍺</div>
+              <div class="case-head">
+                <h3>Solo am Bierwagen</h3>
+                <span class="case-badge">1 Gerät</span>
+              </div>
+              <p class="case-desc">
+                Der Klassiker fürs kleine Vereinsfest oder den
+                Wochenend-Stand. Ein Tablet, ein Kassierer, alles auf einer
+                Theke. Bis ~150 Verkäufe pro Stunde komfortabel machbar.
+              </p>
+              <ul class="case-setup">
+                <li>1× Tablet (10–13 Zoll empfohlen)</li>
+                <li>Tagesbilanz aktivieren</li>
+                <li>Bestand-Funktion empfohlen</li>
+                <li>PWA installieren für Vollbild</li>
+              </ul>
+              <p class="case-tip">
+                <strong>Tipp:</strong> CSV-Export am Schichtende für Kassen-
+                Abrechnung. Anfangsbestand setzen, dann zeigt die Bilanz das
+                Soll-Kassensaldo.
+              </p>
+            </article>
+
+            <!-- 2: Theke + Hilfsstand -->
+            <article class="case">
+              <div class="case-emoji">🍻</div>
+              <div class="case-head">
+                <h3>Theke + Hilfsstand</h3>
+                <span class="case-badge">2 Geräte · Sync</span>
+              </div>
+              <p class="case-desc">
+                Mittelgroßes Setup mit Hauptkasse und einem zweiten Stand
+                (z.B. Cocktail-Bar oder Spätstunden-Notkasse). Beide
+                kassieren parallel, Bilanz und Bestand werden geteilt.
+              </p>
+              <ul class="case-setup">
+                <li>1× Hauptkasse-Tablet (Hauptkasse)</li>
+                <li>1× Nebenkasse-Tablet (Hilfsstand)</li>
+                <li>Beide im selben WLAN</li>
+                <li>Gerätenamen vergeben (z.B. „Theke", „Hilfsstand")</li>
+              </ul>
+              <p class="case-tip">
+                <strong>Tipp:</strong> Im Bilanz-Eintrag steht
+                pro Bestellung, welcher Stand sie aufgenommen hat —
+                praktisch für interne Abrechnung pro Schicht.
+              </p>
+            </article>
+
+            <!-- 3: Bierwagen + Display -->
+            <article class="case">
+              <div class="case-emoji">📺</div>
+              <div class="case-head">
+                <h3>Bierwagen mit Kundendisplay</h3>
+                <span class="case-badge">2 Geräte · Display</span>
+              </div>
+              <p class="case-desc">
+                Eine Kasse plus ein gut sichtbares Display in Richtung
+                Kunde. Steigert Vertrauen — Kunden sehen jeden Klick und
+                den Endpreis live. Ideal für Foodtrucks und kleine Bars.
+              </p>
+              <ul class="case-setup">
+                <li>1× Kassen-Tablet (klein, im Verkaufsbereich)</li>
+                <li>1× Display-Tablet (mittel, Richtung Kunde montiert)</li>
+                <li>Display in Vollbild-Modus</li>
+                <li>Beide am Stromnetz angeschlossen</li>
+              </ul>
+              <p class="case-tip">
+                <strong>Tipp:</strong> Display-Tablet querformat aufstellen
+                und Helligkeit max — auch im Sonnenlicht aus 2&nbsp;m gut
+                lesbar. Bei Bargeld-Eingabe sieht der Kunde sofort
+                Wechselgeld.
+              </p>
+            </article>
+
+            <!-- 4: Großes Festzelt -->
+            <article class="case">
+              <div class="case-emoji">🎪</div>
+              <div class="case-head">
+                <h3>Großes Festzelt</h3>
+                <span class="case-badge">5 Geräte · Sync + Display</span>
+              </div>
+              <p class="case-desc">
+                Vereinsfest mit drei Kassen, Mobile-Order und einem zentralen
+                Kundendisplay. Bilanz läuft zentral auf der Hauptkasse, alle
+                Helfer:innen sehen den gemeinsamen Bestand in Echtzeit.
+              </p>
+              <ul class="case-setup">
+                <li>1× Hauptkasse (Hauptkasse, alle Auswertungen hier)</li>
+                <li>3× Nebenkasse (Bier-Theke, Cocktail-Bar, Mobile-Order)</li>
+                <li>1× Display (über der Hauptkasse oder am Eingang)</li>
+                <li>Stabiles WLAN mit Mesh oder Repeater</li>
+              </ul>
+              <p class="case-tip">
+                <strong>Tipp:</strong> Nebenkassen sind read-only fürs Sortiment
+                — nur die Hauptkassen-Verantwortliche kann Preise oder
+                Sortiment ändern. Reduziert Fehler im Stoßgeschäft.
+              </p>
+            </article>
+
+            <!-- 5: Foodtruck -->
+            <article class="case">
+              <div class="case-emoji">🚚</div>
+              <div class="case-head">
+                <h3>Foodtruck / Imbiss</h3>
+                <span class="case-badge">2 Geräte · Display + Solo</span>
+              </div>
+              <p class="case-desc">
+                Smartphone als Kasse hinter dem Tresen, Tablet außen am
+                Truck als Speisekarte und Live-Anzeige. Bestellung, Pfand,
+                Trinkgeld — alles direkt sichtbar für die Kunden in der
+                Schlange.
+              </p>
+              <ul class="case-setup">
+                <li>1× Smartphone (Kasse, Hosentasche-Format)</li>
+                <li>1× Tablet (am Foodtruck montiert, Richtung Kunde)</li>
+                <li>Hotspot vom Smartphone als WLAN</li>
+                <li>Display permanent in Vollbild-Modus</li>
+              </ul>
+              <p class="case-tip">
+                <strong>Tipp:</strong> Trinkgeld-Vorschläge aktivieren —
+                Kunde sieht „auf 10&nbsp;€ aufrunden" auf dem Display und
+                tippt zustimmend. Erhöht das Trinkgeld nachweislich.
+              </p>
+            </article>
+
+            <!-- 6: Sportverein -->
+            <article class="case">
+              <div class="case-emoji">⚽</div>
+              <div class="case-head">
+                <h3>Heimspieltag im Sportverein</h3>
+                <span class="case-badge">3 Geräte · Wechsel-Schichten</span>
+              </div>
+              <p class="case-desc">
+                Vereinsheim-Bar mit häufigem Personal-Wechsel zwischen 1.
+                und 2. Halbzeit. Hauptkasse-Tablet bleibt fest, zwei Reservate
+                können einspringen. Bilanz wird geteilt, jede Schicht ist
+                pro Gerät erkennbar.
+              </p>
+              <ul class="case-setup">
+                <li>1× Hauptkasse-Tablet (fest verbaut hinter der Theke)</li>
+                <li>2× Nebenkassen (im Wechsel, je 1 pro Schicht)</li>
+                <li>Anfangsbestand setzen für Soll-Berechnung</li>
+                <li>Bilanz-CSV-Export am Saisonende</li>
+              </ul>
+              <p class="case-tip">
+                <strong>Tipp:</strong> JSON-Bilanz-Backup nach jedem
+                Spieltag — falls ein Tablet kaputtgeht, kann die
+                Tagesbilanz auf ein Ersatzgerät importiert werden.
+              </p>
+            </article>
+          </div>
+
+          <!-- Anwendungsbereiche-Pills (kompakt unten) -->
+          <p
+            style="margin-top: 2.5rem; color: var(--text-faint); font-size: 0.92rem"
+          >
+            Auch geeignet für:
+          </p>
+          <div class="usecases" role="list">
+            <span class="uc" role="listitem">Schützenfest</span>
+            <span class="uc" role="listitem">Sommerfest</span>
+            <span class="uc" role="listitem">Feuerwehrfest</span>
+            <span class="uc" role="listitem">Hofbar</span>
+            <span class="uc" role="listitem">Kindergartenfest</span>
+            <span class="uc" role="listitem">Hochzeit / Geburtstag</span>
+            <span class="uc" role="listitem">Vereinsmeisterschaft</span>
+            <span class="uc" role="listitem">Karnevalsverein</span>
+          </div>
+
+          <p
+            class="section-lead"
+            style="margin-top: 2.5rem; font-size: 0.92rem"
+          >
+            <strong>Wichtig:</strong> Kein Ersatz für eine KassenSichV-/TSE-
+            konforme Registrierkasse im Dauer-Gewerbebetrieb. Geeignet für
+            gelegentliche Vereinsfeste, einzelne Bierwagen-Einsätze oder
+            Veranstaltungen ohne Aufzeichnungspflicht. Im Zweifel:
+            Steuerberater oder Vereinsvorstand fragen.
+          </p>
+        </div>
+      </section>
+
+      <section id="datenschutz" aria-labelledby="privacy-h2">
+        <div class="container">
+          <h2 id="privacy-h2">Datenschutz, ehrlich</h2>
+          <p class="section-lead">
+            Statt Cookie-Banner und 18-Seiten-Datenschutz: die App tut einfach
+            nichts, was rechtlich nervig wäre.
+          </p>
+          <div class="privacy-card">
+            <ul class="privacy-list">
+              <li>
+                <span>
+                  <strong>Kein Backend.</strong> Komplett clientseitig im
+                  Browser, keine Server-Übertragung von Bestelldaten.
+                </span>
+              </li>
+              <li>
+                <span>
+                  <strong>Keine Cookies, kein Tracking.</strong> Keine
+                  Telemetrie, keine Drittanbieter-Skripte, kein Google
+                  Analytics.
+                </span>
+              </li>
+              <li>
+                <span>
+                  <strong>localStorage &amp; IndexedDB lokal.</strong> Damit
+                  deine Getränkeliste, Tagesbilanz und Sync-Doc den Reload
+                  überdauern. Bestellungen während der Eingabe leben nur im
+                  RAM.
+                </span>
+              </li>
+              <li>
+                <span>
+                  <strong>Sync direkt zwischen Geräten.</strong> Wenn du
+                  Mehrgeräte-Sync aktivierst, läuft der Datenaustausch über
+                  WebRTC zwischen den Geräten — kein Cloud-Server, kein
+                  Signaling-Server, keine Drittanbieter. QR-Code zwischen den
+                  Geräten reicht.
+                </span>
+              </li>
+              <li>
+                <span>
+                  <strong>Offline-fähig.</strong> Was nicht ins Netz geht, kann
+                  auch nicht abfließen. Service Worker cacht den Code lokal.
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" aria-labelledby="faq-h2">
+        <div class="container">
+          <h2 id="faq-h2">Häufige Fragen</h2>
+          <p class="section-lead">
+            Was Vereinsvorstände, Festwirte und Schichtleiter vorab wissen wollen.
+          </p>
+          <div class="faq">
+            <details>
+              <summary>
+                Brauche ich für Vereinsfeste eine TSE/KassenSichV-Kasse?
+              </summary>
+              <div class="faq-body">
+                <p>
+                  Eingetragene Vereine sind beim gelegentlichen Vereinsfest in
+                  der Regel <em>nicht</em> verpflichtet, eine
+                  KassenSichV-konforme Registrierkasse zu nutzen — die
+                  Aufzeichnungspflicht greift erst bei wirtschaftlichen
+                  Geschäftsbetrieben mit Bargeschäften und elektronischen
+                  Aufzeichnungssystemen.
+                </p>
+                <p>
+                  <strong>Bierwagen Kasse ersetzt keine zertifizierte
+                  Registrierkasse</strong> und ist nicht für gewerbliche Foodtrucks
+                  oder den Dauerbetrieb gedacht. Im Zweifel kurz Steuerberater
+                  oder Vereins-Vorstand fragen.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>Was passiert, wenn das WLAN ausfällt?</summary>
+              <div class="faq-body">
+                <p>
+                  Nach dem ersten Aufruf läuft die App komplett offline (PWA mit
+                  Service Worker). Du kannst sie sogar als App auf den
+                  Home-Bildschirm legen und ohne Browser starten — auch ganz ohne
+                  Internet vor Ort.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>Wo werden meine Daten gespeichert?</summary>
+              <div class="faq-body">
+                <p>
+                  Bestellungen, Pfand-Rückgaben und Bargeld-Eingaben leben
+                  ausschließlich im Arbeitsspeicher des Browsers — Reload löscht
+                  alles. Die Konfiguration (Getränke- und Pfand-Liste) wird im
+                  <code>localStorage</code> deines Browsers gespeichert, damit du
+                  sie nicht jedes Mal neu eingeben musst. Es gibt
+                  <strong>kein Backend</strong>, kein Tracking, keine Cookies.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>
+                Kann ich mehrere Geräte (Theke + Hilfsstand) zusammen nutzen?
+              </summary>
+              <div class="faq-body">
+                <p>
+                  Ja — über die <strong>Mehrgeräte-Sync</strong>. Bis zu fünf
+                  Geräte (Tablets, Handys) im selben WLAN teilen sich live
+                  Tagesbilanz, Bestand und Sortiment. Verbindung per QR-Code
+                  direkt zwischen den Geräten, ohne externen Server. Pro
+                  Bilanz-Eintrag ist sichtbar, von welchem Gerät der Verkauf
+                  kam (z.B. „Theke" oder „Hilfsstand").
+                </p>
+                <p>
+                  Alternativ läuft jeder Wagen unabhängig auf einem eigenen
+                  Tablet — Konfiguration kann via JSON-Export/Import zwischen
+                  Geräten geteilt werden.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>
+                Wie genau funktioniert die Geräte-Synchronisation?
+              </summary>
+              <div class="faq-body">
+                <p>
+                  Ein Gerät startet als „Hauptkasse" und zeigt einen QR-Code. Jedes
+                  weitere Gerät scannt diesen QR und generiert einen
+                  Antwort-Code, den die Hauptkasse zurückscannt — fertig. Ab dann
+                  fließen Bilanz-, Bestand- und Sortiments-Updates in Echtzeit
+                  zwischen den Geräten via WebRTC DataChannel.
+                </p>
+                <p>
+                  <strong>Kein Server, keine Cloud:</strong> Daten verlassen
+                  das lokale Netzwerk nicht. Internet wird nicht benötigt
+                  (auch nicht beim Pairing). Der Hauptkasse kann einzelne Geräte
+                  jederzeit wieder trennen. Nebenkassen sind während der Sync
+                  read-only fürs Sortiment, damit die Hauptkasse die zentrale
+                  Quelle der Wahrheit bleibt. Detaillierte Anleitung in der
+                  App: <em>Konfiguration → Geräte → ?-Symbol</em>.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>Was kostet das?</summary>
+              <div class="faq-body">
+                <p>
+                  Komplett kostenlos. Open Source unter MIT-Lizenz, der Code
+                  liegt auf GitHub. Du kannst die App selbst hosten oder die
+                  gehostete Version unter
+                  <a href="https://bierwagen-kasse.de">bierwagen-kasse.de</a>
+                  nutzen.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>Welche Sprachen werden unterstützt?</summary>
+              <div class="faq-body">
+                <p>
+                  Deutsch, Englisch, Französisch und Italienisch — umschaltbar in
+                  den Einstellungen direkt in der App. Praktisch für
+                  internationale Crews oder grenznahe Veranstaltungen.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>
+                Kann ich Trinkgeld, Tagesbilanz oder Bestände tracken?
+              </summary>
+              <div class="faq-body">
+                <p>
+                  Ja, alles optional über die Einstellungen aktivierbar:
+                </p>
+                <p>
+                  <strong>Trinkgeld:</strong> Schnell-Buttons im Bargeld-Bereich
+                  (+0,50 €, +1 €, Aufrunden auf 5/10 €).<br />
+                  <strong>Tagesbilanz:</strong> Jede abgeschlossene Bestellung
+                  wird gelistet, ist editier- und löschbar; mit Anfangsbestand
+                  und erwartetem Soll-Kassenstand am Schichtende.<br />
+                  <strong>Bestand:</strong> Anfangsmenge pro Getränk —
+                  Tile zeigt die Restmenge und sperrt automatisch bei 0.
+                </p>
+              </div>
+            </details>
+            <details>
+              <summary>Wie sieht es mit DSGVO aus?</summary>
+              <div class="faq-body">
+                <p>
+                  DSGVO-konform per Architektur: Es werden keine
+                  personenbezogenen Daten verarbeitet, übertragen oder mit
+                  Dritten geteilt. Server-Logs des Hosters fallen wie bei jedem
+                  Webseiten-Aufruf an. Details in der
+                  <a href="/datenschutz/">Datenschutzerklärung</a>.
+                </p>
+              </div>
+            </details>
+          </div>
+
+          <div class="github-banner">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1.1 1.9 2.9 1.4 3.6 1.1.1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.6.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"
+              />
+            </svg>
+            <div class="gh-text">
+              <h3>Open Source — auf GitHub</h3>
+              <p>
+                Code, Issues, Pull Requests, Forks — alles offen. MIT-Lizenz.
+                Selber hosten, eigene Features bauen, beitragen.
+              </p>
+            </div>
+            <a
+              class="btn"
+              href="https://github.com/Webexperte-Berlin/bierwagen-kasse"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Repo öffnen ↗</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-band" aria-labelledby="cta-h2">
+        <div class="container">
+          <h2 id="cta-h2">Einmal aufrufen, läuft.</h2>
+          <p class="section-lead" style="margin: 0 auto 2rem">
+            Kein Account, keine Registrierung, keine E-Mail-Adresse. Tool
+            antippen und mit dem Default-Bierset loslegen oder die eigenen
+            Drinks anlegen.
+          </p>
+          <a class="btn btn-large" href="/app/" rel="bookmark">
+            Bierwagen Kasse öffnen →
+          </a>
+        </div>
+      </section>
+
+      <section id="webexperte" aria-labelledby="we-h2" class="we-section">
+        <div class="container">
+          <div class="we-card">
+            <div class="we-header">
+              <span class="we-pill">Entwickelt &amp; bereitgestellt von</span>
+              <h2 id="we-h2">
+                Webexperte<span class="we-dot">.</span>Berlin
+              </h2>
+              <p class="we-lead">
+                Marco Riege — Berliner Webentwickler mit 20+ Jahren Erfahrung in
+                Web-Apps, KI-Lösungen und maßgeschneiderter Digitalisierung. Die
+                Bierwagen Kasse ist eines meiner Open-Source-Tools, kostenlos
+                bereitgestellt.
+              </p>
+            </div>
+
+            <div class="we-services">
+              <article class="we-service">
+                <div class="we-icon">🛠️</div>
+                <h3>Webentwicklung</h3>
+                <p>
+                  Individuelle Web-Apps, Landing-Pages, Online-Shops und
+                  Schnittstellen — von Konzept bis Deployment.
+                </p>
+              </article>
+              <article class="we-service">
+                <div class="we-icon">🤖</div>
+                <h3>KI-Schulungen &amp; Beratung</h3>
+                <p>
+                  Praxisnahe Workshops und Beratung rund um KI-Tools, Prompts,
+                  Automatisierung und Effizienz für Teams.
+                </p>
+              </article>
+              <article class="we-service">
+                <div class="we-icon">📺</div>
+                <h3>TV- &amp; Medienauftritte</h3>
+                <p>
+                  Aus dem Fernsehen bekannt als „Webexperte" — verständliche
+                  Erklärungen rund um digitale Themen.
+                </p>
+              </article>
+            </div>
+
+            <div class="we-cta-row">
+              <a
+                class="btn btn-large"
+                href="https://webexperte.berlin"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                webexperte.berlin besuchen →
+              </a>
+              <a
+                class="btn btn-secondary btn-large"
+                href="mailto:marco@webexperte.berlin"
+              >
+                Anfrage stellen
+              </a>
+            </div>
+            <p class="we-fineprint">
+              Eigenes Tool für Verein, Festzelt oder Unternehmen gewünscht?
+              Schreib mir — Anpassungen, eigene Domain &amp; Features sind
+              möglich.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site" role="contentinfo">
+      <div class="container">
+        <div class="foot-grid">
+          <div>
+            <h4>Bierwagen Kasse</h4>
+            <p style="margin: 0; color: var(--text-faint)">
+              Die schlanke Touch-Kasse für Vereinsfeste, Bierwagen und Festzelte.
+              Kostenlos, datensparsam, sofort einsatzbereit.
+            </p>
+          </div>
+          <div>
+            <h4>App</h4>
+            <ul>
+              <li><a href="/app/">App öffnen</a></li>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#sync">Mehrgeräte-Sync &amp; Display</a></li>
+              <li><a href="/dokumentation/">Anleitung &amp; Doku</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li>
+                <a
+                  href="https://github.com/Webexperte-Berlin/bierwagen-kasse"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >GitHub-Repository ↗</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4>Rechtliches</h4>
+            <ul>
+              <li><a href="/impressum/">Impressum</a></li>
+              <li><a href="/datenschutz/">Datenschutzerklärung</a></li>
+              <li>
+                <a
+                  href="https://webexperte.berlin"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  >Webexperte.Berlin</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="copyright">
+          Bierwagen Kasse — entwickelt &amp; bereitgestellt von
+          <a href="https://webexperte.berlin" target="_blank" rel="noopener noreferrer"
+            ><strong>Marco Riege · Webexperte.Berlin</strong></a
+          >
+          · © 2026 alle Rechte vorbehalten ·
+          <a href="/impressum/">Impressum</a> ·
+          <a href="/datenschutz/">Datenschutz</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

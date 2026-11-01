@@ -1,0 +1,1747 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#09090b" />
+    <title>Dokumentation — Bierwagen Kasse · Anleitung &amp; Funktionen</title>
+    <meta
+      name="description"
+      content="Vollständige Anleitung zur Bierwagen-Kasse-App: Bestellaufnahme, Pfand, Wechselgeld, Trinkgeld, Happy Hour, Bestand, Tagesbilanz, Mehrgeräte-Sync per QR-Code, Kundendisplay, Tablet-Konfiguration für Standby-Vermeidung, PWA-Installation und Troubleshooting."
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="/dokumentation/" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      :root {
+        color-scheme: dark;
+        --bg: #18181b;
+        --bg-elev: #27272a;
+        --bg-deep: #09090b;
+        --text: #fafafa;
+        --text-muted: #a1a1aa;
+        --text-faint: #71717a;
+        --accent: #fbbf24;
+        --accent-soft: #fef3c7;
+        --emerald: #10b981;
+        --emerald-soft: #064e3b;
+        --fuchsia: #d946ef;
+        --fuchsia-soft: #4a044e;
+        --red: #ef4444;
+        --red-soft: #450a0a;
+        --border: #3f3f46;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      code {
+        background: var(--bg-elev);
+        padding: 0.1rem 0.4rem;
+        border-radius: 0.3rem;
+        font-size: 0.9em;
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      }
+      kbd {
+        background: var(--bg-elev);
+        border: 1px solid var(--border);
+        border-bottom-width: 2px;
+        padding: 0.05rem 0.45rem;
+        border-radius: 0.3rem;
+        font-size: 0.85em;
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      }
+      .container {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+      header.site {
+        border-bottom: 1px solid #27272a;
+        background: var(--bg-deep);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.85rem 1.25rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 800;
+        color: var(--text);
+      }
+      .brand img {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+      }
+      .nav-links {
+        margin-left: auto;
+        display: flex;
+        gap: 1.25rem;
+      }
+      .nav-links a {
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 0.95rem;
+      }
+      .nav-links a:hover {
+        color: var(--text);
+      }
+      main {
+        padding: 2.5rem 0 5rem;
+      }
+      h1 {
+        font-size: clamp(1.9rem, 4vw, 2.6rem);
+        font-weight: 800;
+        margin: 0 0 0.4rem;
+        letter-spacing: -0.01em;
+      }
+      .subtitle {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        margin: 0 0 2rem;
+      }
+      h2 {
+        font-size: 1.6rem;
+        font-weight: 800;
+        margin: 3.5rem 0 0.6rem;
+        scroll-margin-top: 4rem;
+        letter-spacing: -0.005em;
+        border-top: 1px solid #27272a;
+        padding-top: 2.5rem;
+      }
+      h2:first-of-type {
+        border-top: none;
+        padding-top: 0;
+      }
+      h3 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 1.8rem 0 0.4rem;
+        color: var(--text);
+        scroll-margin-top: 4rem;
+      }
+      h4 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 1.2rem 0 0.4rem;
+        color: var(--text);
+      }
+      p,
+      ul,
+      ol {
+        color: var(--text-muted);
+      }
+      p {
+        margin: 0 0 1rem;
+      }
+      ul,
+      ol {
+        margin: 0 0 1rem;
+        padding-left: 1.4rem;
+      }
+      ul li,
+      ol li {
+        margin-bottom: 0.45rem;
+      }
+      strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+      em {
+        color: var(--text);
+        font-style: normal;
+        font-weight: 500;
+      }
+      .toc {
+        background: var(--bg-elev);
+        border: 1px solid var(--border);
+        border-radius: 0.8rem;
+        padding: 1.2rem 1.4rem;
+        margin: 0 0 3rem;
+      }
+      .toc-title {
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-faint);
+        margin: 0 0 0.8rem;
+      }
+      .toc ol {
+        margin: 0;
+        padding-left: 1.4rem;
+        column-count: 2;
+        column-gap: 1.5rem;
+      }
+      @media (max-width: 600px) {
+        .toc ol {
+          column-count: 1;
+        }
+      }
+      .toc ol li {
+        margin-bottom: 0.35rem;
+        break-inside: avoid;
+      }
+      .toc a {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+      .toc a:hover {
+        color: var(--accent);
+      }
+      .callout {
+        margin: 1.2rem 0;
+        padding: 1rem 1.2rem;
+        border-radius: 0.6rem;
+        border-left: 3px solid;
+        background: var(--bg-elev);
+      }
+      .callout-info {
+        border-color: #38bdf8;
+      }
+      .callout-warning {
+        border-color: var(--accent);
+      }
+      .callout-danger {
+        border-color: var(--red);
+      }
+      .callout-tip {
+        border-color: var(--emerald);
+      }
+      .callout-title {
+        font-weight: 700;
+        color: var(--text);
+        margin: 0 0 0.3rem;
+        font-size: 0.95rem;
+      }
+      .callout p {
+        margin: 0;
+      }
+      .callout p + p {
+        margin-top: 0.6rem;
+      }
+      .callout ul {
+        margin: 0.5rem 0 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.95rem;
+      }
+      th,
+      td {
+        border-bottom: 1px solid var(--border);
+        padding: 0.55rem 0.7rem;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: var(--bg-elev);
+        font-weight: 700;
+        color: var(--text);
+      }
+      td {
+        color: var(--text-muted);
+      }
+      td strong {
+        color: var(--text);
+      }
+      .step-list {
+        counter-reset: step-counter;
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0 1.5rem;
+      }
+      .step-list li {
+        counter-increment: step-counter;
+        position: relative;
+        padding-left: 2.4rem;
+        margin-bottom: 0.85rem;
+      }
+      .step-list li::before {
+        content: counter(step-counter);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1.7rem;
+        height: 1.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent);
+        color: var(--bg-deep);
+        border-radius: 0.4rem;
+        font-weight: 800;
+        font-size: 0.85rem;
+      }
+      .pill {
+        display: inline-block;
+        padding: 0.1rem 0.5rem;
+        border-radius: 0.3rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        background: var(--bg-elev);
+        color: var(--text);
+      }
+      .pill-emerald {
+        background: var(--emerald-soft);
+        color: #6ee7b7;
+      }
+      .pill-fuchsia {
+        background: var(--fuchsia-soft);
+        color: #f0abfc;
+      }
+      .pill-amber {
+        background: #422006;
+        color: #fcd34d;
+      }
+      .pill-red {
+        background: var(--red-soft);
+        color: #fca5a5;
+      }
+      .anchor-link {
+        text-decoration: none;
+        color: var(--text-faint);
+        margin-left: 0.4rem;
+        font-weight: 400;
+        opacity: 0;
+        transition: opacity 0.15s;
+        font-size: 0.85em;
+      }
+      h2:hover .anchor-link,
+      h3:hover .anchor-link {
+        opacity: 1;
+      }
+      .source-box {
+        margin-top: 4rem;
+        padding: 1rem 1.2rem;
+        background: var(--bg-elev);
+        border: 1px solid var(--border);
+        border-radius: 0.7rem;
+        font-size: 0.85rem;
+        color: var(--text-faint);
+      }
+      footer.site {
+        border-top: 1px solid #27272a;
+        padding: 2rem 0;
+        font-size: 0.85rem;
+        color: var(--text-faint);
+        text-align: center;
+      }
+      footer a {
+        color: var(--text-muted);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="nav">
+        <a class="brand" href="/" aria-label="Bierwagen Kasse Startseite">
+          <img src="/icon.svg" alt="" width="28" height="28" />
+          Bierwagen Kasse
+        </a>
+        <div class="nav-links">
+          <a href="/">Start</a>
+          <a href="/app/">App öffnen</a>
+          <a href="/datenschutz/">Datenschutz</a>
+          <a href="/impressum/">Impressum</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <h1>Dokumentation</h1>
+        <p class="subtitle">
+          Vollständige Anleitung zu allen Funktionen der Bierwagen Kasse —
+          von der ersten Bestellung bis zur Mehrgeräte-Sync. Geschrieben für
+          Vereinsvorstände, Festwirte und Schichtleiter ohne IT-Vorkenntnisse.
+        </p>
+
+        <nav class="toc" aria-label="Inhaltsverzeichnis">
+          <div class="toc-title">Inhalt</div>
+          <ol>
+            <li><a href="#einleitung">Was die App tut (und was nicht)</a></li>
+            <li><a href="#schnellstart">Schnellstart in 5 Minuten</a></li>
+            <li><a href="#sortiment">Sortiment anlegen</a></li>
+            <li><a href="#bestellung">Bestellaufnahme</a></li>
+            <li><a href="#pfand">Pfand-Handling</a></li>
+            <li><a href="#wechselgeld">Wechselgeld &amp; Trinkgeld</a></li>
+            <li><a href="#storno">Storno-Modus</a></li>
+            <li><a href="#happyhour">Happy Hour</a></li>
+            <li><a href="#bestand">Bestand verfolgen</a></li>
+            <li><a href="#bilanz">Tagesbilanz</a></li>
+            <li><a href="#sync">Mehrgeräte-Sync</a></li>
+            <li><a href="#display">Kundendisplay</a></li>
+            <li><a href="#backup">Backup &amp; Wiederherstellung</a></li>
+            <li><a href="#tablet-setup">Tablet-Konfiguration</a></li>
+            <li><a href="#pwa">App installieren (PWA)</a></li>
+            <li><a href="#datenschutz">Datenschutz &amp; Sicherheit</a></li>
+            <li><a href="#troubleshooting">Häufige Probleme</a></li>
+            <li><a href="#glossar">Glossar</a></li>
+          </ol>
+        </nav>
+
+        <!-- ===================================================================
+             1. Was die App tut (und was nicht)
+             =================================================================== -->
+        <h2 id="einleitung">
+          Was die App tut (und was nicht)
+          <a href="#einleitung" class="anchor-link">#</a>
+        </h2>
+        <p>
+          <strong>Bierwagen Kasse</strong> ist eine Touch-Kasse für
+          Vereinsfeste, Bierwagen, Festzelte, Foodtrucks und Imbissstände.
+          Sie läuft im Browser — auf Tablet, Smartphone oder Laptop. Keine
+          Installation nötig, kein Account, keine Anmeldung.
+        </p>
+
+        <h3>Was die App kann</h3>
+        <ul>
+          <li>
+            Bestellungen schnell aufnehmen — ein Tap pro Getränk, Long-Press
+            für Mehrfachauswahl
+          </li>
+          <li>Pfand sauber getrennt verwalten und zurückgeben</li>
+          <li>Wechselgeld berechnen, Trinkgeld erfassen, Bargeld verbuchen</li>
+          <li>Happy Hour mit Zeitfenster pro Getränk</li>
+          <li>Bestand pro Drink mit Sperre bei 0</li>
+          <li>
+            Tagesbilanz mit Einzeleinträgen, CSV-Export, JSON-Backup und
+            druckbarer Übersicht
+          </li>
+          <li>
+            Mehrere Geräte teilen sich Bilanz und Bestand in Echtzeit per
+            QR-Code-Pairing — ohne externen Server
+          </li>
+          <li>
+            Ein Tablet als Kundendisplay verwenden, das die Bestellung in
+            Echtzeit anzeigt
+          </li>
+          <li>
+            Vier Sprachen (DE / EN / FR / IT), Hell- und Dunkelmodus,
+            Vollbild-Modus
+          </li>
+          <li>
+            Offline-Betrieb — nach dem ersten Aufruf läuft die App komplett
+            ohne Internet
+          </li>
+        </ul>
+
+        <h3>Was die App nicht kann</h3>
+        <div class="callout callout-warning">
+          <div class="callout-title">Wichtig: keine zertifizierte Registrierkasse</div>
+          <p>
+            Die App ist keine KassenSichV-/TSE-konforme Registrierkasse und
+            ersetzt keine. Sie ist gedacht für gelegentliche Vereinsfeste oder
+            kleine Veranstaltungen <em>ohne</em> Aufzeichnungspflicht. Bei
+            Zweifeln: Steuerberater oder Vereinsvorstand fragen.
+          </p>
+          <p>
+            Auch nicht eingebaut: Lagerverwaltung, Buchhaltungs-Export,
+            Personal-Login, Schichtwechsel-Übergabe, Kunden-Stammdaten.
+          </p>
+        </div>
+
+        <!-- ===================================================================
+             2. Schnellstart
+             =================================================================== -->
+        <h2 id="schnellstart">
+          Schnellstart in 5 Minuten
+          <a href="#schnellstart" class="anchor-link">#</a>
+        </h2>
+        <ol class="step-list">
+          <li>
+            <strong>App öffnen:</strong>
+            <a href="/app/">bierwagen-kasse.de/app/</a> im Browser aufrufen.
+            Funktioniert auf jedem Tablet, Smartphone oder Laptop. Beim ersten
+            Aufruf werden ein paar Default-Getränke (Pils, Helles, Weizen, Maß
+            …) automatisch angelegt.
+          </li>
+          <li>
+            <strong>Sortiment anpassen:</strong> oben rechts auf
+            <em>Tab Sortiment</em>. Eigene Getränke, Preise und
+            Pfand-Kategorien eintragen. Defaults löschen oder behalten.
+          </li>
+          <li>
+            <strong>Funktionen aktivieren (optional):</strong>
+            <em>Tab Optionen</em>. Hier Trinkgeld, Tagesbilanz
+            und Bestand-Funktion ein-/ausschalten je nach Bedarf.
+          </li>
+          <li>
+            <strong>Tablet vorbereiten:</strong> Auto-Sperre ausschalten,
+            Helligkeit hoch, ggf. PWA installieren (siehe Abschnitt
+            <a href="#tablet-setup">Tablet-Konfiguration</a>).
+          </li>
+          <li>
+            <strong>Loslegen:</strong> Bestellungen aufnehmen, „Neue
+            Bestellung" beendet jeden Verkauf. Am Ende des Tages CSV-Export
+            der Bilanz.
+          </li>
+        </ol>
+
+        <!-- ===================================================================
+             3. Sortiment
+             =================================================================== -->
+        <h2 id="sortiment">
+          Sortiment anlegen
+          <a href="#sortiment" class="anchor-link">#</a>
+        </h2>
+        <p>
+          Unter <em>Tab Sortiment</em> verwaltest du zwei Listen:
+          Pfand-Kategorien und Getränke (= „Produkte" — funktioniert genauso
+          für Speisen, Snacks, alles was du verkaufst).
+        </p>
+
+        <h3>Pfand-Kategorien</h3>
+        <p>
+          Beispiele: <em>Glas</em> (1,00 €), <em>Maßkrug</em> (5,00 €),
+          <em>Plastik-Becher</em> (1,00 €), <em>Pfandflasche</em> (0,15 €).
+          Beliebig viele Kategorien möglich. Jedem Getränk weist du später
+          genau eine zu (oder „kein Pfand").
+        </p>
+
+        <h3>Getränke / Produkte</h3>
+        <p>Pro Eintrag werden gespeichert:</p>
+        <ul>
+          <li><strong>Icon</strong> — eines von 26+ Symbolen (Bier, Wein, Pizza, Kaffee …)</li>
+          <li><strong>Bezeichnung</strong> — z.B. „Pils", „Spätzle"</li>
+          <li><strong>Größe</strong> — z.B. „0,5 L", „Portion" (optional)</li>
+          <li><strong>Preis</strong> — in Euro</li>
+          <li><strong>Pfandtyp</strong> — verlinkt auf eine der Kategorien (oder „kein Pfand")</li>
+          <li><strong>Happy Hour</strong> — optionales Zeitfenster mit Sonderpreis</li>
+          <li><strong>Anfangsbestand</strong> — optional, wenn die Bestand-Funktion aktiv ist</li>
+        </ul>
+
+        <div class="callout callout-tip">
+          <div class="callout-title">Tipp: Sortiment einmal anlegen, oft nutzen</div>
+          <p>
+            Über <em>Tab Optionen → Sortiment exportieren</em> kannst
+            du dein Sortiment als JSON-Datei speichern. Beim nächsten Fest auf
+            jedem Gerät einfach importieren — keine Tipp-Arbeit zum zweiten
+            Mal.
+          </p>
+        </div>
+
+        <!-- ===================================================================
+             4. Bestellaufnahme
+             =================================================================== -->
+        <h2 id="bestellung">
+          Bestellaufnahme
+          <a href="#bestellung" class="anchor-link">#</a>
+        </h2>
+
+        <h3>Tap = +1, Long-Press = Mehrfachauswahl</h3>
+        <p>
+          Im Tab <em>Bestellung</em> siehst du das Drink-Grid. Pro Getränk
+          eine große Kachel mit Icon, Name, Größe und Preis.
+        </p>
+        <ul>
+          <li><strong>Ein Tap:</strong> +1 Stück</li>
+          <li>
+            <strong>Long-Press</strong> (Finger ~0,4 Sek halten): Auswahl
+            +1, +5 oder +10 erscheint — gut für volle Tische
+          </li>
+          <li>
+            <strong>Anzahl-Badge oben rechts</strong> auf der Kachel zeigt,
+            wie oft das Getränk schon in der aktuellen Bestellung ist
+          </li>
+        </ul>
+
+        <h3>Bestellung ansehen / korrigieren</h3>
+        <p>
+          Auf dem Smartphone ist die laufende Bestellung als Drawer rechts
+          versteckt — der Knopf am unteren Rand „Bestellung · X Artikel"
+          öffnet ihn. Auf Tablet/Desktop ist sie permanent rechts sichtbar.
+          Pro Position kann man <kbd>+</kbd> / <kbd>−</kbd> klicken oder die
+          ganze Position löschen.
+        </p>
+
+        <h3>Bestellung abschließen</h3>
+        <p>
+          Der gelbe <em>„Kassieren"</em>-Button steht direkt neben dem Betrag. Er
+          schließt die laufende Bestellung ab — wenn die Tagesbilanz aktiv
+          ist, wandert sie als kompletter Eintrag dort hinein. Danach ist
+          das UI bereit für den nächsten Kunden. Danebengetippt? Ein paar
+          Sekunden lang steht unten <em>„Rückgängig"</em> bereit. Soll eine
+          Bestellung gar nicht zählen (Kunde überlegt es sich anders), nimm
+          <em>„Leeren"</em> in der Bestellung: Das erfasst keinen Verkauf.
+        </p>
+
+        <!-- ===================================================================
+             5. Pfand
+             =================================================================== -->
+        <h2 id="pfand">
+          Pfand-Handling
+          <a href="#pfand" class="anchor-link">#</a>
+        </h2>
+        <p>
+          Pfand ist von den Getränkepreisen sauber getrennt. Auf der
+          Bestellungs-Übersicht erscheint pro Getränk mit Pfand zusätzlich
+          die Pfand-Zeile (<em>+ 1,00 € Glas</em>). Die Total-Bar unten zeigt
+          drei Summen getrennt: Getränke, Pfand-Aufschlag, Pfand-Rückgabe.
+        </p>
+
+        <h3>Pfand zurückgeben</h3>
+        <p>
+          <em>Pfand zurück</em>-Bereich:
+        </p>
+        <ul>
+          <li>
+            <strong>Mobile</strong>: kompakte Bar am unteren Rand mit
+            Plus/Minus pro Pfand-Kategorie
+          </li>
+          <li>
+            <strong>Desktop / Tablet quer</strong>: rechte Spalte unter der
+            laufenden Bestellung
+          </li>
+        </ul>
+        <p>
+          Tippe auf <kbd>+</kbd> bei der Kategorie, die der Kunde
+          zurückbringt. Der Betrag wird vom Total <em>abgezogen</em>. Die
+          Total-Bar zeigt das in roter Schrift als <em>− Rückgabe</em>.
+        </p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">Wechselbeziehung zur Bilanz</div>
+          <p>
+            Beim Klick auf „Kassieren" landen sowohl die Getränke
+            (positiv) als auch die Pfand-Rückgaben (negativ) in der
+            Tagesbilanz. Die <em>Soll-Kassenstand</em>-Berechnung
+            berücksichtigt beides automatisch.
+          </p>
+        </div>
+
+        <!-- ===================================================================
+             6. Wechselgeld
+             =================================================================== -->
+        <h2 id="wechselgeld">
+          Wechselgeld &amp; Trinkgeld
+          <a href="#wechselgeld" class="anchor-link">#</a>
+        </h2>
+
+        <h3>Wechselgeld-Vorschläge</h3>
+        <p>
+          Im Bargeld-Bereich der Total-Bar werden bis zu drei Vorschläge
+          generiert, was der Kunde gegeben haben könnte:
+        </p>
+        <ul>
+          <li>
+            <span class="pill pill-emerald">Passend</span> — exakter Betrag
+            der Bestellung (kein Rückgeld)
+          </li>
+          <li>
+            <span class="pill pill-amber">Aufrund-Vorschläge</span> —
+            nächster Euro / nächster 5-Euro-Schritt / nächster Schein
+            (10/20/50/100 €)
+          </li>
+          <li>
+            <span class="pill">Eigener Betrag</span> — über das
+            Calculator-Icon öffnet sich ein Numpad für freie Eingabe
+          </li>
+        </ul>
+        <p>
+          Klick auf einen Vorschlag → Wechselgeld erscheint im Total-Tile in
+          Echtzeit. Bei „Passend" steht da ✓ statt einem Geldbetrag.
+        </p>
+
+        <h3>Trinkgeld (optional)</h3>
+        <p>
+          In <em>Optionen → Trinkgeld-Schnellbutton</em> aktivierbar.
+          Dann erscheinen unter den Bargeld-Vorschlägen drei
+          Aufrund-Optionen für Trinkgeld:
+        </p>
+        <ul>
+          <li>Aufrundung auf den nächsten Euro (z.B. 4,80 € → 5,00 €, +0,20 €)</li>
+          <li>Aufrundung auf den nächsten 5-Euro-Schritt</li>
+          <li>Aufrundung auf den nächsten 10-Euro-Schritt</li>
+        </ul>
+        <p>
+          Plus: ein Calculator-Icon für individuelles Trinkgeld. Trinkgeld
+          wird in der Tagesbilanz separat ausgewiesen — getrennt vom
+          Brutto-Umsatz.
+        </p>
+
+        <!-- ===================================================================
+             7. Storno
+             =================================================================== -->
+        <h2 id="storno">
+          Storno-Modus
+          <a href="#storno" class="anchor-link">#</a>
+        </h2>
+        <p>
+          Im Header der Storno-Button (Radiergummi-Icon). Aktivieren =
+          Bestätigung erforderlich, das ganze UI färbt sich rot:
+        </p>
+        <ul>
+          <li>Drink-Kacheln bekommen rote Umrandung</li>
+          <li>Banner über dem Grid: „Storno-Modus: Tippen entfernt 1 Stück"</li>
+          <li>Header bleibt rot bis zum nächsten Tap auf den Storno-Button</li>
+        </ul>
+        <p>
+          Im Storno-Modus entfernt jedes Tap auf eine Kachel <em>eine</em>
+          Einheit aus der laufenden Bestellung (statt hinzuzufügen). Wird
+          automatisch deaktiviert, sobald die Bestellung leer ist.
+        </p>
+        <div class="callout callout-tip">
+          <div class="callout-title">Hintergrund</div>
+          <p>
+            Der Modus ist absichtlich „klobig" — separater Toggle plus
+            sichtbarer Banner — damit man im Stoßgeschäft nicht versehentlich
+            Stornos durchführt, wenn man eigentlich verkaufen will.
+          </p>
+        </div>
+
+        <!-- ===================================================================
+             8. Happy Hour
+             =================================================================== -->
+        <h2 id="happyhour">
+          Happy Hour pro Getränk
+          <a href="#happyhour" class="anchor-link">#</a>
+        </h2>
+        <p>
+          Beim Bearbeiten eines Getränks in der Sortiments-Konfiguration:
+          Checkbox „Happy Hour" aktivieren → drei Felder erscheinen:
+        </p>
+        <ul>
+          <li><strong>Start</strong> — z.B. 17:00</li>
+          <li><strong>Ende</strong> — z.B. 19:00</li>
+          <li><strong>Sonderpreis</strong> — z.B. 3,00 €</li>
+        </ul>
+        <p>
+          Die App vergleicht die Geräte-Uhrzeit mit dem Zeitfenster und
+          wechselt automatisch zwischen Normal- und Happy-Hour-Preis. Während
+          aktiver Happy Hour:
+        </p>
+        <ul>
+          <li>
+            Drink-Kachel zeigt ein <span class="pill pill-fuchsia">HH</span>
+            Badge oben links
+          </li>
+          <li>
+            Der Preis erscheint in fuchsia, der Originalpreis durchgestrichen
+            daneben
+          </li>
+          <li>Auf dem Kundendisplay genauso markiert</li>
+        </ul>
+        <div class="callout callout-info">
+          <div class="callout-title">Beispiel</div>
+          <p>
+            Pils kostet normal 4,50 €, Happy Hour 17–19 Uhr 3,00 €.
+            Zeitfenster läuft per Geräte-Uhrzeit (also: lokale Zeit am
+            Tablet). Mehrere Tablets im selben WLAN haben i.d.R. dieselbe
+            Zeit, aber wenn nicht — schlecht synchronisierte Uhr kann zu
+            kurzem Versatz führen. NTP-Synchronisation des Tablets aktiviert
+            lassen.
+          </p>
+        </div>
+
+        <!-- ===================================================================
+             9. Bestand
+             =================================================================== -->
+        <h2 id="bestand">
+          Bestand verfolgen
+          <a href="#bestand" class="anchor-link">#</a>
+        </h2>
+        <p>
+          In <em>Optionen → Bestand</em> aktivierbar. Pro Getränk
+          erscheint dann in der Sortiments-Konfig ein Feld
+          <em>Anfangsbestand</em>. Beispiel: „60 Pils".
+        </p>
+
+        <h3>Live-Anzeige</h3>
+        <p>
+          Auf der Drink-Kachel erscheint unten rechts ein Restmenge-Badge:
+        </p>
+        <ul>
+          <li><strong>grau</strong>: alles in Ordnung, > 5 übrig</li>
+          <li>
+            <span class="pill pill-amber">Warnung</span>: ≤ 5 übrig
+          </li>
+          <li>
+            <span class="pill pill-red">leer</span>: 0 übrig — Kachel wird
+            automatisch deaktiviert, kein weiteres Hinzufügen möglich
+          </li>
+        </ul>
+
+        <h3>Wie wird der Bestand berechnet?</h3>
+        <p>
+          Die Restmenge ergibt sich aus
+          <code>Anfangsbestand − verkaufte Menge laut Tagesbilanz</code>.
+          Die Bestand-Funktion ist also abhängig von der Tagesbilanz:
+          „Verkauft" zählt erst <em>nach</em> dem Klick auf „Neue
+          Bestellung". Während der laufenden Bestellung wird die Restmenge
+          aber bereits vorgehalten — d.h. wenn 60 Pils Anfangsbestand und 58
+          schon verkauft, kannst du in der laufenden Bestellung noch maximal
+          2 hinzufügen, dann sperrt die Kachel.
+        </p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">Bestand und Mehrgeräte-Sync</div>
+          <p>
+            Bei aktivierter Sync wird der Bestand <em>geräteübergreifend</em>
+            geteilt — alle Geräte zählen vom selben Anfangsbestand
+            gemeinsam runter. Wenn das Hauptkasse 60 Pils einträgt und
+            beide Theken-Tablets verkaufen, sieht jedes Tablet den
+            korrekten Restbestand in Echtzeit.
+          </p>
+        </div>
+
+        <!-- ===================================================================
+             10. Tagesbilanz
+             =================================================================== -->
+        <h2 id="bilanz">
+          Tagesbilanz
+          <a href="#bilanz" class="anchor-link">#</a>
+        </h2>
+        <p>
+          In <em>Optionen → Tagesbilanz</em> aktivierbar. Plus
+          <em>Anfangsbestand Kasse</em> setzen (z.B. 200,00 € Wechselgeld
+          beim Schichtbeginn).
+        </p>
+
+        <h3>Was wird gespeichert?</h3>
+        <p>
+          Jeder Klick auf „Kassieren" schreibt einen
+          <em>Bilanz-Eintrag</em> mit allen Details:
+        </p>
+        <ul>
+          <li>Zeitstempel (Datum + Uhrzeit)</li>
+          <li>Liste der Positionen (Getränk, Größe, Anzahl, Einzelpreis, Pfand)</li>
+          <li>Liste der Pfand-Rückgaben</li>
+          <li>Trinkgeld separat</li>
+          <li>Zahlart (Bar / Karte / Sonstiges)</li>
+          <li>Erfassungs-Gerät — bei aktiver Sync sichtbar, von welchem Tablet die Bestellung kam</li>
+        </ul>
+
+        <h3>Bilanz ansehen</h3>
+        <p>
+          Der Tab <em>Bilanz</em> zeigt nach Aktivierung:
+        </p>
+        <ul>
+          <li><strong>Summary-Tiles</strong>: Anfangsbestand, Brutto-Umsatz, Trinkgeld, Soll-Kassenstand</li>
+          <li><strong>Pro-Produkt-Aggregat</strong>: wie oft welches Getränk verkauft, mit Umsatz</li>
+          <li>
+            <strong>Bestellungs-Liste</strong>: jede einzelne Bestellung mit
+            Zeit, Total und Bearbeiten-/Löschen-Buttons
+          </li>
+        </ul>
+
+        <h3>Drei Export-Wege</h3>
+        <ul>
+          <li>
+            <strong>CSV</strong> — für Excel, Numbers, Google Sheets. Eine
+            Zeile pro Position, deutsche Dezimalzeichen, UTF-8 mit BOM. Excel
+            erkennt es korrekt beim Doppelklick.
+          </li>
+          <li>
+            <strong>JSON</strong> — Backup zum späteren Wiederimportieren
+            (siehe <a href="#backup">Backup-Abschnitt</a>)
+          </li>
+          <li>
+            <strong>Drucken</strong> — öffnet ein neues Fenster im
+            DIN-A4-Layout mit allen Bestellungen, Aggregat und
+            Soll-Kassenstand. Auto-Druck-Dialog. Auch als HTML-Datei
+            speicherbar wenn Pop-Up blockiert.
+          </li>
+        </ul>
+
+        <h3>Anfangsbestand der Kasse</h3>
+        <p>
+          Das Wechselgeld, das du morgens in die Kasse legst (z.B. 200 €
+          Kleingeld zum Wechseln). Wird in der Bilanz als <em>Soll =
+          Anfangsbestand + Bareinnahmen − Pfand-Rückgaben</em> berechnet —
+          und sollte am Ende des Tages dem tatsächlichen Kasseninhalt
+          entsprechen.
+        </p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">Nebenkassen sehen die Bilanz NICHT</div>
+          <p>
+            Bei aktiver Sync ist die Tagesbilanz nur auf dem
+            <em>Hauptkasse</em> sichtbar und editierbar. Nebenkassen
+            kassieren mit, schreiben aber nur in die geteilte Bilanz —
+            ansehen kann sie nur die Hauptkasse. Das verhindert versehentliche
+            Edits durch Hilfskräfte.
+          </p>
+        </div>
+
+        <!-- ===================================================================
+             11. Mehrgeräte-Sync
+             =================================================================== -->
+        <h2 id="sync">
+          Mehrgeräte-Sync per QR-Code
+          <a href="#sync" class="anchor-link">#</a>
+        </h2>
+        <p>
+          Mehrere Geräte (Tablets, Handys) im selben WLAN teilen sich
+          Tagesbilanz, Bestand und Sortiment in Echtzeit. Verbindung läuft
+          direkt zwischen den Geräten via <strong>WebRTC</strong> — kein
+          Server, keine Cloud, kein externer Dienst.
+        </p>
+
+        <h3>Wie das technisch funktioniert (kurz)</h3>
+        <p>
+          Beim Pairing wird ein QR-Code zwischen den Geräten getauscht. Der
+          enthält die Verbindungsdaten (WebRTC SDP). Sobald beide Seiten den
+          Code kennen, bauen sie eine direkte
+          <em>Peer-zu-Peer-Verbindung</em> über das lokale Netzwerk auf.
+          Datenänderungen werden via CRDT-Algorithmus
+          (<a href="https://github.com/yjs/yjs" target="_blank" rel="noopener">Yjs</a>)
+          konfliktfrei zwischen allen Geräten gemerged.
+        </p>
+
+        <h3>Rollen</h3>
+        <ul>
+          <li>
+            <strong>Hauptkasse</strong>: das Gerät, das die Verbindung startet.
+            Gibt Sortiment und Einstellungen für alle vor. Sieht die
+            Tagesbilanz und kann andere Geräte trennen.
+          </li>
+          <li>
+            <strong>Nebenkasse</strong>: weitere Geräte, die sich anschließen.
+            Nehmen Bestellungen auf, dürfen Sortiment und geteilte
+            Einstellungen aber <em>nicht</em> ändern, solange sie verbunden
+            sind. Ihr bisheriges Sortiment wird beim Koppeln durch das der
+            Hauptkasse ersetzt, ihre Verkäufe bleiben erhalten.
+          </li>
+          <li>
+            <strong>Display</strong>: optionaler dritter Modus, ein Tablet
+            wird zum Kundendisplay (siehe nächster Abschnitt).
+          </li>
+        </ul>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">Wichtig: Das richtige Gerät zur Hauptkasse machen</div>
+          <p>
+            Starte die Hauptkasse auf dem Gerät mit dem fertigen Sortiment. Wer
+            ein frisches Gerät zur Hauptkasse macht, ersetzt das Sortiment der
+            anderen durch die Standardliste. Sichere es im Zweifel vorher über
+            <em>Optionen → Sortiment exportieren</em>.
+          </p>
+        </div>
+
+        <h3>Koppeln in 4 Schritten</h3>
+        <ol class="step-list">
+          <li>
+            <strong>Beide Geräte:</strong> Tab Geräte. Oben einen
+            Gerätenamen vergeben (z.B. „Theke", „Hilfsstand"). Erscheint
+            später in der Bilanz pro Bestellung.
+          </li>
+          <li>
+            <strong>Hauptkasse:</strong> „Als Hauptkasse starten" → ein
+            QR-Code wird angezeigt.
+          </li>
+          <li>
+            <strong>Nebenkasse:</strong> „Mit Hauptkasse verbinden" → Kamera
+            öffnet sich → den Code im Rahmen halten. Das Gerät zeigt jetzt
+            einen <em>Antwort-Code</em>.
+          </li>
+          <li>
+            <strong>Hauptkasse:</strong> „Antwort-Code scannen" → Kamera auf
+            den Antwort-Code der Nebenkasse. Die Verbindung steht meist nach
+            wenigen Sekunden. Scheitert sie, sagt die App, woran es liegt.
+          </li>
+        </ol>
+
+        <p>
+          Für jedes weitere Gerät: an der Hauptkasse „Weitere Kasse verbinden"
+          tippen und die Schritte 3 und 4 wiederholen. Ohne Kamera lässt sich
+          der Code auch kopieren und im Scanner unter <em>„Code einfügen statt
+          scannen"</em> einfügen.
+        </p>
+
+        <h3>Wenn die Verbindung abreißt</h3>
+        <p>
+          Kurze Aussetzer übersteht die Verbindung: Ein Gerät gilt nach rund
+          10 Sekunden Stille als <em>instabil</em>, aufgegeben wird es erst nach
+          45 Sekunden. Damit Geräte gar nicht erst einschlafen, hält
+          <em>Optionen → Bildschirm anlassen</em> das Display an.
+        </p>
+        <p>
+          Reißt die Verbindung doch ab, zum Beispiel weil ein Gerät neu gestartet
+          oder lange gesperrt wurde, erscheint oben ein dauerhafter Hinweis
+          <em>„Keine Verbindung zu [Name]"</em>. Es geht nichts verloren: Jedes
+          Gerät speichert seine Verkäufe weiter, und beim Neu-Verbinden werden sie
+          automatisch zusammengeführt. Der Hinweis bleibt 24 Stunden, auch nach
+          einem Neustart der App.
+        </p>
+
+        <h3 id="sync-grenzen">Grenzen der No-Server-Lösung</h3>
+        <p>
+          Die App nutzt bewusst <em>keinen</em> zentralen Server, um
+          Datenschutz und Unabhängigkeit zu garantieren. Das hat Vor- und
+          Nachteile:
+        </p>
+
+        <h4>✓ Vorteile</h4>
+        <ul>
+          <li>
+            <strong>Kein App-Server</strong> — keine Cloud, kein Konto, kein
+            Signaling-Dienst. Die Geräte sprechen direkt und verschlüsselt
+            (DTLS) miteinander.
+          </li>
+          <li>
+            <strong>Funktioniert ohne Internet</strong> — im selben WLAN oder
+            am Hotspot eines Geräts läuft alles offline, wenn die App einmal
+            geladen wurde.
+          </li>
+          <li>
+            <strong>Keine Kosten, keine Verträge</strong> — keine
+            Abo-Modelle, keine Server-Hosting-Rechnungen.
+          </li>
+        </ul>
+
+        <h4>✗ Einschränkungen</h4>
+        <ul>
+          <li>
+            <strong>Nach einem Abriss muss neu gekoppelt werden.</strong> Ohne
+            Server können sich zwei Geräte nicht selbst wiederfinden. Betroffen
+            sind App-Neustarts und längere Sperren oder Netzwechsel.
+          </li>
+          <li>
+            <strong>Beide Geräte müssen im selben Netz sein.</strong> Über
+            verschiedene Netze oder Mobilfunk geht es nicht. Das ist Absicht:
+            Dafür wären externe Server nötig, die die App bewusst nicht nutzt.
+          </li>
+          <li>
+            <strong>Manche WLANs blockieren P2P-Verkehr.</strong> Vor allem
+            öffentliche Hotspots in Cafés, Hotels und Bahnhöfen („Client
+            Isolation"). Lösung: Hotspot eines Smartphones nutzen.
+          </li>
+          <li>
+            <strong>Keine automatische Geräte-Erkennung.</strong> Browser
+            können das technisch nicht — daher der QR-Code-Tausch.
+          </li>
+          <li>
+            <strong>Firefox als Nebenkasse:</strong> Der Antwort-Code muss dort
+            innerhalb von rund 25 Sekunden gescannt werden. Sonst meldet die
+            Hauptkasse einen Fehler und man koppelt neu. Chrome, Edge und Safari
+            warten länger.
+          </li>
+        </ul>
+
+        <div class="callout callout-tip">
+          <div class="callout-title">Tipp: Smartphone-Hotspot als zuverlässiges WLAN</div>
+          <p>
+            Wenn das Vereinsheim-WLAN unzuverlässig oder restriktiv ist:
+            Hotspot eines Smartphones nutzen. Alle Geräte verbinden sich mit
+            diesem WLAN, ein Datentarif ist dafür nicht nötig.
+          </p>
+        </div>
+
+        <h3>Wer gewinnt bei Konflikten?</h3>
+        <ul>
+          <li>
+            <strong>Tagesbilanz</strong>: Einträge aller Geräte werden
+            vereinigt. Jede Bestellung hat eine eindeutige ID, mehrere Geräte
+            können also gleichzeitig kassieren, auch während sie getrennt sind.
+          </li>
+          <li>
+            <strong>Sortiment und geteilte Einstellungen</strong>: Es gilt der
+            Stand der Hauptkasse, auf allen Geräten in derselben Reihenfolge.
+          </li>
+          <li>
+            <strong>Daten-Abgleich</strong>: Alle rund 30 Sekunden und beim
+            Zurückkehren in die App gleichen die Geräte ab, ob ihnen etwas fehlt.
+            Beim Gerät steht, wann das zuletzt geschah.
+          </li>
+        </ul>
+
+        <!-- ===================================================================
+             12. Kundendisplay
+             =================================================================== -->
+        <h2 id="display">
+          Kundendisplay
+          <a href="#display" class="anchor-link">#</a>
+        </h2>
+        <p>
+          Optionaler Modus: ein Tablet (oder Handy) wird zum Vollbild-Display,
+          das die laufende Bestellung des Kassen-Geräts in großer
+          kunden-lesbarer Schrift anzeigt. Ideal für eine fest montierte
+          Anzeige am Bierwagen, sichtbar für die Kunden vor der Theke.
+        </p>
+
+        <h3>Was zeigt das Display?</h3>
+        <ul>
+          <li>Kopfzeile mit Status-Icon und Name des Kassen-Geräts</li>
+          <li>
+            Liste aller Positionen der laufenden Bestellung mit Anzahl,
+            Bezeichnung, Pfand-Aufschlag und Zwischenbetrag
+          </li>
+          <li>Happy-Hour-Markierung mit durchgestrichenem Originalpreis</li>
+          <li>Pfand-Rückgaben in roter Schrift</li>
+          <li>Drei-Tile-Breakdown: Getränke / + Pfand / − Rückgabe</li>
+          <li>
+            Großen <strong>Gesamtbetrag</strong> ganz unten (Zu zahlen) —
+            aus 2&nbsp;m Entfernung lesbar
+          </li>
+          <li>
+            Bei Bargeld-Eingabe: Gegeben + Rückgeld in fetter Schrift, mit ✓
+            wenn passend
+          </li>
+        </ul>
+
+        <h3>Display einrichten — 5 Schritte</h3>
+        <ol class="step-list">
+          <li>
+            <strong>Kassen-Gerät:</strong> Tab Geräte → Sektion
+            „Kundendisplay" → „Display verbinden". Ein QR-Code mit
+            Display-Marker erscheint.
+          </li>
+          <li>
+            <strong>Display-Tablet:</strong> Tab Geräte → „Als
+            Display nutzen". Das ganze UI wechselt in den
+            Kundendisplay-Modus.
+          </li>
+          <li>
+            <strong>Display-Tablet:</strong> „Kassen-QR scannen" → Kamera
+            öffnet sich → Code der Hauptkasse scannen. Das Display zeigt jetzt einen
+            Antwort-Code.
+          </li>
+          <li>
+            <strong>Kassen-Gerät:</strong> „Antwort-Code scannen" → Verbindung
+            steht. Beide Geräte zeigen 🟢 verbunden.
+          </li>
+          <li>
+            <strong>Display-Tablet:</strong> Vollbild aktivieren (Maximize-
+            Icon im Header) → die Browserleiste verschwindet, nur die
+            Kunden-Anzeige bleibt.
+          </li>
+        </ol>
+
+        <h3>Display verlassen</h3>
+        <p>
+          Oben rechts steht ein kleiner „Beenden"-Button.
+          Tap braucht 2 Klicks (Bestätigung), damit ein versehentliches
+          Anstoßen den Modus nicht beendet.
+        </p>
+
+        <h3>Mehrere Displays</h3>
+        <p>
+          Pro Kasse sind beliebig viele Displays möglich (1:N). Jedes
+          Display erscheint auf der Hauptkasse mit Geräte-Name und einem
+          „Trennen"-Button. So kann man z.B. eine Anzeige innen und eine
+          außen am Bierwagen haben.
+        </p>
+
+        <h3>Datenfluss</h3>
+        <p>
+          Das Display sendet KEINE Daten an die Kasse — es empfängt nur
+          Order-Snapshots. Es weiß nichts von der Tagesbilanz oder vom
+          Sortiment, nur von der laufenden Bestellung. Sobald „Neue
+          Bestellung" gedrückt wird, leert sich das Display und wartet auf
+          die nächste.
+        </p>
+
+        <!-- ===================================================================
+             13. Backup & Restore
+             =================================================================== -->
+        <h2 id="backup">
+          Backup &amp; Wiederherstellung
+          <a href="#backup" class="anchor-link">#</a>
+        </h2>
+        <p>
+          Unter <em>Tab Optionen</em> gibt es zwei separate
+          Backup-Bereiche.
+        </p>
+
+        <h3>Sortiment sichern</h3>
+        <ul>
+          <li>
+            <strong>Sortiment exportieren</strong> → JSON-Datei mit
+            <code>format: bierwagen-kasse-config</code>. Enthält alle
+            Getränke, Pfand-Kategorien, Bestand-Werte, Happy-Hour-Settings.
+          </li>
+          <li>
+            <strong>Sortiment importieren</strong> → JSON-Datei laden, die
+            App ersetzt das aktuelle Sortiment durch das importierte.
+            Bestehende Tagesbilanz bleibt unangetastet.
+          </li>
+        </ul>
+
+        <h3>Tagesbilanz sichern (nur Hauptkasse)</h3>
+        <ul>
+          <li>
+            <strong>Bilanz exportieren</strong> → JSON-Datei mit
+            <code>format: bierwagen-kasse-bilanz</code>. Vollständiges
+            Backup aller Einträge inkl. Geräte-Zuordnung.
+          </li>
+          <li>
+            <strong>Bilanz importieren</strong> → JSON-Datei laden,
+            Bestätigungs-Dialog zeigt „X Einträge laden, Y bestehende
+            ersetzen". Die aktuelle Bilanz wird komplett ersetzt.
+          </li>
+        </ul>
+
+        <div class="callout callout-tip">
+          <div class="callout-title">Use-Case: Geräte-Wechsel</div>
+          <p>
+            Tablet wird gewechselt mitten im Fest? Bilanz auf dem alten
+            Tablet exportieren, auf dem neuen importieren — alle Einträge
+            stehen nahtlos weiter. Auch die Erfassungs-Geräte-Zuordnung pro
+            Bestellung bleibt erhalten.
+          </p>
+        </div>
+
+        <h3>Falsche Datei? Klare Fehlermeldung</h3>
+        <p>
+          Beide Importer erkennen, wenn die falsche Datei eingelesen wird:
+        </p>
+        <ul>
+          <li>
+            Bilanz-Datei in den Sortiment-Import: <em>„Diese Datei ist eine
+            Tagesbilanz, kein Sortiment. Bitte den Button ‚Bilanz
+            importieren' weiter unten nutzen."</em>
+          </li>
+          <li>
+            Sortiments-Datei in den Bilanz-Import: <em>„Diese Datei ist ein
+            Sortiment, keine Tagesbilanz."</em>
+          </li>
+        </ul>
+
+        <!-- ===================================================================
+             14. Tablet-Konfiguration
+             =================================================================== -->
+        <h2 id="tablet-setup">
+          Tablet-Konfiguration für den Dauer-Einsatz
+          <a href="#tablet-setup" class="anchor-link">#</a>
+        </h2>
+        <p>
+          Damit das Tablet während eines mehrstündigen Festes <em>nicht</em>
+          in den Standby geht, sich zwischendurch sperrt oder das WLAN
+          abbricht, müssen vorher ein paar Einstellungen angepasst werden.
+          Die folgende Anleitung deckt iPad/iOS und Android ab.
+        </p>
+
+        <h3>iPad / iOS</h3>
+        <h4>Auto-Sperre deaktivieren</h4>
+        <ol>
+          <li><kbd>Einstellungen</kbd> → <kbd>Anzeige &amp; Helligkeit</kbd> → <kbd>Automatische Sperre</kbd></li>
+          <li>Auf <em>Nie</em> setzen (oder maximal: 15 Minuten)</li>
+        </ol>
+        <p>
+          <em>Hinweis:</em> bei iPads im niedrigen Ladestand greift „Nie"
+          eventuell trotzdem nicht. Im Zweifel: Tablet immer am Strom
+          haben.
+        </p>
+
+        <h4>Helligkeit hoch &amp; True Tone deaktivieren</h4>
+        <ol>
+          <li><kbd>Einstellungen</kbd> → <kbd>Anzeige &amp; Helligkeit</kbd></li>
+          <li>Helligkeit auf maximal — für Outdoor-Sichtbarkeit</li>
+          <li>True Tone aus, Night Shift aus (verfälscht sonst Farben)</li>
+        </ol>
+
+        <h4>Nicht stören aktivieren</h4>
+        <ol>
+          <li><kbd>Einstellungen</kbd> → <kbd>Fokus</kbd> → <kbd>Nicht stören</kbd></li>
+          <li>Aktivieren — verhindert dass Anrufe / Push-Benachrichtigungen die App stören</li>
+        </ol>
+
+        <h4>Drehung sperren (wenn fest montiert)</h4>
+        <ol>
+          <li>Kontrollzentrum öffnen (von oben rechts wischen bei iPads ab iOS 12)</li>
+          <li>Schloss-Symbol mit Pfeil = Ausrichtungssperre</li>
+          <li>Tablet vorher in der gewünschten Orientierung halten, dann sperren</li>
+        </ol>
+
+        <h4>WLAN-Verhalten</h4>
+        <ol>
+          <li><kbd>Einstellungen</kbd> → <kbd>WLAN</kbd> → das Netzwerk anwählen</li>
+          <li><em>Privat-Adresse</em> deaktivieren (sonst kann Sync evtl. nicht stabil rerouten)</li>
+          <li><em>Auto-Beitritt</em> aktiviert lassen</li>
+        </ol>
+
+        <h4>Im Browser: Tab nicht schließen</h4>
+        <p>
+          Safari kann Tabs nach längerer Zeit „freezen" um Speicher zu
+          sparen. Lösung: PWA installieren (siehe nächster Abschnitt) — dann
+          läuft die App als eigenständige App ohne Tab-Verwaltung.
+        </p>
+
+        <h3>Android-Tablets</h3>
+        <h4>Bildschirm-Timeout</h4>
+        <ol>
+          <li><kbd>Einstellungen</kbd> → <kbd>Anzeige</kbd> → <kbd>Bildschirm-Timeout</kbd> oder <kbd>Bildschirm aus nach</kbd></li>
+          <li>Auf 30 Minuten oder Maximum setzen (Hersteller-abhängig)</li>
+          <li>
+            <strong>Tipp Android:</strong> Es gibt eine versteckte Option
+            „Aktiviert lassen, wenn am Strom" unter
+            <kbd>Einstellungen</kbd> → <kbd>System</kbd> →
+            <kbd>Entwickleroptionen</kbd>. Entwickler-Modus aktivieren:
+            7-mal auf die <em>Build-Nummer</em> tippen unter
+            <kbd>Über das Tablet</kbd>.
+          </li>
+        </ol>
+
+        <h4>Akku-Optimierung deaktivieren</h4>
+        <ol>
+          <li><kbd>Einstellungen</kbd> → <kbd>Apps</kbd> → <kbd>Browser</kbd> (Chrome / Samsung Internet / etc.)</li>
+          <li><kbd>Akku</kbd> → „Nicht optimieren" / „Uneingeschränkt"</li>
+        </ol>
+
+        <h4>Ruhemodus ausschalten</h4>
+        <ol>
+          <li><kbd>Einstellungen</kbd> → <kbd>Akku</kbd></li>
+          <li>Energiesparmodus / Akku-Optimierung deaktivieren</li>
+          <li>Ggf. „App-Standby-Buckets" für den Browser deaktivieren</li>
+        </ol>
+
+        <h4>Helligkeit &amp; Drehung</h4>
+        <ol>
+          <li>Adaptive Helligkeit aus, manuell auf max</li>
+          <li>Drehsperre aktiv über die Schnelleinstellungen</li>
+        </ol>
+
+        <h4>WLAN immer aktiv</h4>
+        <ol>
+          <li><kbd>Einstellungen</kbd> → <kbd>WLAN</kbd> → ⚙️ (Erweitert)</li>
+          <li>„WLAN im Stand-by aktiv lassen" → Immer</li>
+        </ol>
+
+        <h3>Universelle Empfehlungen</h3>
+        <div class="callout callout-info">
+          <div class="callout-title">Stromversorgung</div>
+          <p>
+            <strong>Tablet immer am Strom haben</strong> während des Festes.
+            iPads und große Android-Tablets ziehen bei voller Helligkeit
+            ~10–15 W — kein Akku hält das einen ganzen Tag. USB-C mit
+            mindestens 30 W Netzteil empfohlen. Powerbank für Notfälle.
+          </p>
+        </div>
+        <div class="callout callout-info">
+          <div class="callout-title">Browser-Wahl</div>
+          <p>
+            <strong>Empfohlen:</strong> Chrome (Android), Safari (iOS) — die
+            offiziellen System-Browser. Diese haben die beste WebRTC-Stabilität
+            und PWA-Integration.<br>
+            Firefox auf Android funktioniert auch, hat aber gelegentlich
+            Probleme mit der Kamera bei QR-Scans.
+          </p>
+        </div>
+        <div class="callout callout-info">
+          <div class="callout-title">WLAN-Position</div>
+          <p>
+            Router/Access-Point sollte mit allen Tablets in Sichtlinie oder
+            maximal 15&nbsp;m Abstand sein. Bei größeren Festen mit mehreren
+            Wagen: Mesh-Router oder Repeater einplanen, damit alle Geräte
+            stabil im selben WLAN bleiben.
+          </p>
+        </div>
+
+        <!-- ===================================================================
+             15. PWA installieren
+             =================================================================== -->
+        <h2 id="pwa">
+          App installieren (PWA)
+          <a href="#pwa" class="anchor-link">#</a>
+        </h2>
+        <p>
+          Die Bierwagen Kasse ist eine
+          <strong>Progressive Web App (PWA)</strong> und kann als
+          eigenständige App auf den Home-Bildschirm gelegt werden — sie
+          läuft dann <em>ohne Browser-Chrome</em>, in Vollbild, mit eigenem
+          Icon. Vorteil: kein versehentliches Schließen des Tabs, kein
+          „Tab-Sleep" durch den Browser, keine Adressleiste sichtbar.
+        </p>
+
+        <h3>iOS (Safari)</h3>
+        <ol class="step-list">
+          <li>App im Safari öffnen: <a href="/app/">bierwagen-kasse.de/app/</a></li>
+          <li>Auf das Teilen-Icon ⤴️ tippen (Quadrat mit Pfeil nach oben)</li>
+          <li>„Zum Home-Bildschirm" wählen — eventuell etwas runterscrollen</li>
+          <li>Bestätigen → ein Bierwagen-Kasse-Icon erscheint auf dem Home-Screen</li>
+          <li>Vom Home-Screen starten → läuft in Vollbild ohne Safari-Leiste</li>
+        </ol>
+
+        <h3>Android (Chrome)</h3>
+        <ol class="step-list">
+          <li>App im Chrome öffnen: <a href="/app/">bierwagen-kasse.de/app/</a></li>
+          <li>Auf das Drei-Punkte-Menü oben rechts tippen</li>
+          <li>„App installieren" oder „Zum Startbildschirm hinzufügen" wählen</li>
+          <li>Bestätigen → Icon erscheint auf dem Home-Screen / im App-Drawer</li>
+        </ol>
+
+        <h3>Desktop (Chrome / Edge)</h3>
+        <ol class="step-list">
+          <li>App in Chrome / Edge öffnen</li>
+          <li>Symbol „Installieren" rechts in der Adressleiste klicken (Computer-Icon mit Pfeil)</li>
+          <li>Bestätigen → App startet als eigenes Fenster ohne Browser-Tabs</li>
+        </ol>
+
+        <div class="callout callout-tip">
+          <div class="callout-title">Warum PWA-Installation empfohlen ist</div>
+          <p>
+            <strong>iOS:</strong> Safari kann Hintergrund-Tabs aus Speichergründen
+            killen — eine installierte PWA bleibt aktiv.
+          </p>
+          <p>
+            <strong>Sync-Stabilität:</strong> Eine PWA hat eigene Lifecycle-
+            Events und überlebt System-Multitasking besser als ein Browser-Tab.
+          </p>
+          <p>
+            <strong>Look:</strong> Vollbild ohne URL-Leiste — sieht
+            professioneller aus, besonders wenn das Tablet kunden-sichtbar ist.
+          </p>
+        </div>
+
+        <!-- ===================================================================
+             16. Datenschutz
+             =================================================================== -->
+        <h2 id="datenschutz">
+          Datenschutz &amp; Sicherheit
+          <a href="#datenschutz" class="anchor-link">#</a>
+        </h2>
+        <p>
+          Die App ist DSGVO-konform per Architektur — keine
+          personenbezogenen Daten werden verarbeitet, übertragen oder mit
+          Dritten geteilt.
+        </p>
+
+        <h3>Was wo gespeichert wird</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Daten</th>
+              <th>Speicherort</th>
+              <th>Wann?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Sortiment</strong> (Drinks, Pfand, Bestand, Happy Hour)</td>
+              <td><code>localStorage</code> auf dem Gerät</td>
+              <td>Immer (ab erstem Aufruf)</td>
+            </tr>
+            <tr>
+              <td><strong>Einstellungen</strong> (Sprache, Theme, Features, Geräte-Name)</td>
+              <td><code>localStorage</code></td>
+              <td>Immer</td>
+            </tr>
+            <tr>
+              <td><strong>Tagesbilanz</strong> (abgeschlossene Bestellungen)</td>
+              <td><code>localStorage</code></td>
+              <td>Nur wenn Bilanz-Funktion aktiv</td>
+            </tr>
+            <tr>
+              <td><strong>Sync-Doc</strong> (CRDT-Backup)</td>
+              <td><code>IndexedDB</code></td>
+              <td>Nur wenn Geräte-Sync aktiv</td>
+            </tr>
+            <tr>
+              <td><strong>Letzte Sync-Session</strong> (für Reconnect)</td>
+              <td><code>localStorage</code>, TTL 24 Std</td>
+              <td>Nach erfolgreichem Pairing</td>
+            </tr>
+            <tr>
+              <td><strong>Laufende Bestellung</strong> (Bestellzeile, Bargeld, Trinkgeld)</td>
+              <td>Nur Arbeitsspeicher (RAM)</td>
+              <td>Verschwindet beim Reload!</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Was die App NICHT macht</h3>
+        <ul>
+          <li>Keine Cookies</li>
+          <li>Kein <code>sessionStorage</code></li>
+          <li>Kein Tracking, keine Telemetrie, keine Analytics</li>
+          <li>Keine Drittanbieter-Skripte</li>
+          <li>Kein Backend, keine zentrale Datenbank</li>
+          <li>Kein Cloud-Server, kein Signaling-Service</li>
+        </ul>
+
+        <h3>WebRTC-Sync &amp; Datenschutz</h3>
+        <p>
+          Bei aktiver Geräte-Sync wird <em>einmalig</em> beim Pairing ein
+          QR-Code physisch zwischen den Geräten getauscht. Danach läuft die
+          Verbindung über
+          <a href="https://webrtc.org/" target="_blank" rel="noopener">WebRTC</a>
+          direkt zwischen den Geräten. Externe Dienste sind dabei nicht beteiligt: kein Server und auch kein
+          STUN- oder TURN-Dienst. Die Geräte müssen deshalb im selben Netz sein.
+        </p>
+        <p>
+          Volle Details:
+          <a href="/datenschutz/">Datenschutzerklärung</a>.
+        </p>
+
+        <h3>Daten löschen</h3>
+        <p>
+          Über <em>Tab Optionen → Alles zurücksetzen</em> wird der
+          gesamte lokale Speicher (alle drei localStorage-Keys + IndexedDB)
+          gelöscht. Default-Konfig wird wiederhergestellt. Aktive
+          Sync-Verbindungen werden vorher sauber getrennt.
+        </p>
+
+        <!-- ===================================================================
+             17. Häufige Probleme
+             =================================================================== -->
+        <h2 id="troubleshooting">
+          Häufige Probleme
+          <a href="#troubleshooting" class="anchor-link">#</a>
+        </h2>
+
+        <h3>QR-Code wird nicht erkannt</h3>
+        <ul>
+          <li>Display-Helligkeit hochdrehen, 15 bis 25 cm Abstand zum Display</li>
+          <li>Display sauber wischen (Fingerabdrücke!)</li>
+          <li>Tablet leicht kippen, dass keine Reflexion auf dem QR liegt</li>
+          <li>
+            iOS: zwischen Standard-Kamera-App und der App-Kamera kann es
+            Unterschiede geben — die App nutzt automatisch die beste
+            verfügbare Erkennungs-API
+          </li>
+        </ul>
+
+        <h3>Verbindung kommt nicht zustande / bricht ab</h3>
+        <ul>
+          <li>
+            Beide Geräte im selben WLAN? Doppelt prüfen — auch
+            unterschiedliche WLAN-Kanäle / 2.4 vs 5 GHz desselben Netzes
+            sollten OK sein, aber unterschiedliche WLAN-Namen sind ein
+            Problem
+          </li>
+          <li>
+            Manche Hotel-/Café-WLANs blockieren Geräte-zu-Geräte-Verkehr
+            (Client Isolation). Lösung: Smartphone-Hotspot
+          </li>
+          <li>
+            Firewall im Router prüfen — manche aggressive Firewalls
+            blockieren UDP-Verkehr, den WebRTC braucht
+          </li>
+          <li>
+            Browser-Version checken — auf älteren Browsern (vor 2022) kann
+            WebRTC instabil sein
+          </li>
+        </ul>
+
+        <h3>Oben steht „Keine Verbindung zu …"</h3>
+        <p>
+          Ein Gerät war zu lange gesperrt, wurde neu gestartet oder hat das Netz
+          gewechselt. Es geht nichts verloren: Über <em>„Neu verbinden"</em>
+          koppelst du neu, die Verkäufe werden zusammengeführt. Vorbeugen lässt
+          sich mit <em>Optionen → Bildschirm anlassen</em>.
+        </p>
+
+        <h3>Der Support braucht Details</h3>
+        <p>
+          Im Tab Geräte kopiert <em>„Diagnose für den Support kopieren"</em> einen
+          technischen Bericht: App-Version, Verbindungsweg und Ereignisprotokoll,
+          aber keine Bestell- oder Umsatzdaten.
+        </p>
+
+        <h3>Nebenkasse kann auf einmal nichts mehr ändern</h3>
+        <p>
+          Das ist Absicht: Bei aktiver Verbindung sind Sortiment und geteilte
+          Einstellungen auf der Nebenkasse gesperrt, damit überall dieselben
+          Preise gelten. Änderungen macht die Hauptkasse, sie erscheinen sofort
+          auf allen Geräten.
+        </p>
+
+        <h3>Bilanz-Eintrag versehentlich gelöscht</h3>
+        <p>
+          Über <em>Tagesbilanz → Eintrag bearbeiten</em> kann ein Eintrag
+          editiert oder gelöscht werden. Gelöschte Einträge können nicht
+          wiederhergestellt werden — daher: regelmäßig
+          <em>Bilanz exportieren</em> als Backup, vor allem bei
+          mehrstündigen Festen.
+        </p>
+
+        <h3>App lädt nicht / weißer Bildschirm</h3>
+        <ol>
+          <li>Browser-Cache leeren (Strg/Cmd-Shift-R)</li>
+          <li>Anderen Browser probieren</li>
+          <li>
+            Wenn Service Worker den Cache zerstört hat: in den Browser-
+            Entwicklertools <em>Anwendung → Speicher → Daten löschen</em> →
+            App neu laden
+          </li>
+          <li>
+            Letzter Ausweg: <em>Tab Optionen → Alles zurücksetzen</em>
+            (löscht aber alles!)
+          </li>
+        </ol>
+
+        <h3>Kamera erlaubt keinen Zugriff</h3>
+        <ul>
+          <li>
+            iOS: <kbd>Einstellungen</kbd> → <kbd>Safari</kbd> →
+            <kbd>Kamera</kbd> → <em>Erlauben</em>
+          </li>
+          <li>
+            Android Chrome: in der App auf das Schloss-Symbol in der
+            Adressleiste tippen → Berechtigungen → Kamera erlauben
+          </li>
+          <li>
+            Wichtig: Kamera-Zugriff ist nur möglich auf Seiten mit
+            HTTPS — bierwagen-kasse.de ist HTTPS, daher kein Problem
+          </li>
+        </ul>
+
+        <!-- ===================================================================
+             18. Glossar
+             =================================================================== -->
+        <h2 id="glossar">
+          Glossar
+          <a href="#glossar" class="anchor-link">#</a>
+        </h2>
+        <table>
+          <tbody>
+            <tr>
+              <td><strong>PWA</strong></td>
+              <td>
+                Progressive Web App — eine Web-App, die wie eine native App
+                installiert werden kann (mit Icon auf dem Home-Bildschirm,
+                Vollbild, offline-fähig)
+              </td>
+            </tr>
+            <tr>
+              <td><strong>WebRTC</strong></td>
+              <td>
+                Browser-Standard für Echtzeit-Kommunikation. Erlaubt direkte
+                Peer-zu-Peer-Verbindungen ohne Server-Vermittlung
+              </td>
+            </tr>
+            <tr>
+              <td><strong>QR-Code</strong></td>
+              <td>
+                2D-Strichcode mit verschlüsselten Pairing-Daten. Wird mit der
+                Kamera gescannt
+              </td>
+            </tr>
+            <tr>
+              <td><strong>P2P</strong></td>
+              <td>
+                Peer-to-Peer — direkte Verbindung zwischen Geräten, ohne
+                zentrale Server-Instanz
+              </td>
+            </tr>
+            <tr>
+              <td><strong>CRDT</strong></td>
+              <td>
+                Conflict-free Replicated Data Type — Algorithmus, der
+                Datensätze auf mehreren Geräten synchron hält und Konflikte
+                deterministisch auflöst
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Yjs</strong></td>
+              <td>
+                Konkrete CRDT-Implementierung, die Bierwagen Kasse für die
+                Mehrgeräte-Sync nutzt
+              </td>
+            </tr>
+            <tr>
+              <td><strong>localStorage</strong></td>
+              <td>
+                Browser-API für lokale Datenspeicherung (5–10 MB pro Origin).
+                Daten verlassen das Gerät nie
+              </td>
+            </tr>
+            <tr>
+              <td><strong>IndexedDB</strong></td>
+              <td>
+                Größere Browser-Datenbank für strukturierte Daten. Wird hier
+                für die CRDT-Sync-Doc genutzt
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Service Worker</strong></td>
+              <td>
+                Hintergrund-Skript des Browsers, das die App offline-fähig
+                macht durch Caching der Code-Dateien
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Hauptkasse / Nebenkasse / Display</strong></td>
+              <td>
+                Die drei Rollen in der Mehrgeräte-Sync — siehe Abschnitt
+                <a href="#sync">Mehrgeräte-Sync</a>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Tombstone</strong></td>
+              <td>
+                Markierung „gelöscht", die in einem CRDT bleibt, damit die
+                Löschung über alle Geräte propagiert wird
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="source-box">
+          <p>
+            Diese Dokumentation deckt den Stand der App zum Zeitpunkt der
+            Veröffentlichung. Bei Updates kommen ggf. weitere Funktionen
+            dazu — diese Seite wird laufend aktualisiert.
+          </p>
+          <p>
+            Open Source — Code, Issues und Feature-Requests auf
+            <a
+              href="https://github.com/Webexperte-Berlin/bierwagen-kasse"
+              target="_blank"
+              rel="noopener noreferrer"
+            >GitHub</a
+            >.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site">
+      <div class="container">
+        <p>
+          <a href="/">Start</a> ·
+          <a href="/app/">App öffnen</a> ·
+          <a href="/datenschutz/">Datenschutz</a> ·
+          <a href="/impressum/">Impressum</a> ·
+          <a
+            href="https://github.com/Webexperte-Berlin/bierwagen-kasse"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GitHub ↗</a
+          >
+        </p>
+        <p>© 2026 Marco Riege · Webexperte.Berlin</p>
+      </div>
+    </footer>
+  </body>
+</html>

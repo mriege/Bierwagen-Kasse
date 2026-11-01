@@ -1,0 +1,82 @@
+# Bierwagen Kasse — nginx config (Beispiel)
+#
+# In /etc/nginx/sites-available/ ablegen und symlinken:
+#   sudo ln -s /etc/nginx/sites-available/bierwagen-kasse /etc/nginx/sites-enabled/
+#   sudo nginx -t && sudo systemctl reload nginx
+#
+# HTTPS-Zertifikat z. B. via certbot:
+#   sudo certbot --nginx -d kasse.example.de
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name kasse.example.de;
+
+    # Auf HTTPS umleiten (PWA-Install + Service Worker brauchen HTTPS)
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name kasse.example.de;
+
+    ssl_certificate     /etc/letsencrypt/live/kasse.example.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/kasse.example.de/privkey.pem;
+
+    # Pfad zum Build-Output (das hochgeladene dist/)
+    root /var/www/bierwagen-kasse;
+    index index.html;
+
+    charset utf-8;
+
+    # SPA-Fallback (zukunftssicher; aktuell kein Routing nötig)
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Hashed Assets — 1 Jahr immutable
+    location ~* ^/assets/.*\.(js|css|woff2?|png|jpg|jpeg|gif|webp|svg)$ {
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        access_log off;
+    }
+
+    # Service Worker: niemals cachen
+    location = /sw.js {
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+        add_header Pragma "no-cache";
+        expires 0;
+    }
+
+    # index.html: nie cachen — sonst sehen User keine Updates
+    location = / {
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+    }
+    location = /index.html {
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+    }
+
+    # Manifest
+    location = /manifest.webmanifest {
+        types { } default_type "application/manifest+json";
+        add_header Cache-Control "public, max-age=3600";
+    }
+
+    # Security-Header
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "no-referrer" always;
+
+    # Kompression
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types
+        text/css
+        text/javascript
+        application/javascript
+        application/json
+        application/manifest+json
+        image/svg+xml;
+}
